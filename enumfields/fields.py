@@ -1,10 +1,9 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+import six
 
 
-class EnumFieldMixin(object):
-    __metaclass__ = models.SubfieldBase
-
+class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
     def __init__(self, enum, choices=None, max_length=10, **options):
         self.enum = enum
         if not choices:

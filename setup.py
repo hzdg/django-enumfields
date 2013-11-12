@@ -47,6 +47,7 @@ setup(
     ],
     install_requires=[
         'enum34',
+        'six',
     ],
     tests_require=[
         'pytest-django',

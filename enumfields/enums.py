@@ -1,10 +1,11 @@
 from enum import Enum as BaseEnum, EnumMeta as BaseEnumMeta
+import six
 
 
 class EnumMeta(BaseEnumMeta):
     def __new__(cls, name, bases, attrs):
+        Labels = attrs.get('Labels')
         obj = BaseEnumMeta.__new__(cls, name, bases, attrs)
-        Labels = attrs.pop('Labels', None)
         for m in obj:
             try:
                 m.label = getattr(Labels, m.name)
@@ -13,9 +14,7 @@ class EnumMeta(BaseEnumMeta):
         return obj
 
 
-class Enum(BaseEnum):
-    __metaclass__ = EnumMeta
-
+class Enum(six.with_metaclass(EnumMeta, BaseEnum)):
     @classmethod
     def choices(cls):
         """
