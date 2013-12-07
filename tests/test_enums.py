@@ -1,7 +1,12 @@
 from django.db import connection
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.models import User
 from enumfields import Enum
 import pytest
 from .models import MyModel
+from .admin import MyModelAdmin, myadminsite
+from django.http import HttpRequest
+import mock
 
 
 def test_choices():
@@ -49,3 +54,17 @@ def test_db_value():
     cursor = connection.cursor()
     cursor.execute('SELECT color FROM %s WHERE id = %%s' % MyModel._meta.db_table, [m.pk])
     assert cursor.fetchone()[0] == MyModel.Color.RED.value
+
+@pytest.mark.django_db
+def test_model_admin():
+    mymodel_admin = MyModelAdmin(model=MyModel, admin_site=myadminsite)
+    mock_user = mock.MagicMock(autospec=User)
+    mock_user.is_authenticated = mock.Mock(return_value=True)
+    request = HttpRequest()
+    request.user = mock_user
+    request._dont_enforce_csrf_checks = True
+    add_view = csrf_exempt(mymodel_admin.add_view)
+    view = add_view(request)
+    print(view.content)
+
+
