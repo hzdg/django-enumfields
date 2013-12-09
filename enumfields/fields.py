@@ -34,12 +34,3 @@ class EnumField(EnumFieldMixin, models.CharField):
 
 class EnumIntegerField(EnumFieldMixin, models.IntegerField):
     pass
-
-
-try:
-    from south.modelsinspector import add_introspection_rules
-except:
-    pass
-else:
-    add_introspection_rules([], ['^enumfields\.fields\.EnumField$'])
-    add_introspection_rules([], ['^enumfields\.fields\.EnumIntegerField$'])
