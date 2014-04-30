@@ -34,3 +34,30 @@ class EnumField(EnumFieldMixin, models.CharField):
 
 class EnumIntegerField(EnumFieldMixin, models.IntegerField):
     pass
+
+
+
+
+# South compatibility stuff
+
+def converter_func(enum_class):
+    return "__import__('%(module)s', globals(), locals(), ['%(class)s']).%(class)s" % \
+            {"module":enum_class.__module__,
+             "class": enum_class.__name__}
+
+
+rules = [
+  (
+    [EnumFieldMixin],
+    [],
+    {
+        "enum": ["enum", {'is_django_function':True, "converter": converter_func}],
+    },
+  )
+]
+
+try:
+    from south.modelsinspector import add_introspection_rules
+    add_introspection_rules(rules, ["^enumfields\.fields"])
+except ImportError:
+    pass
