@@ -35,8 +35,14 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
         return None if value is None else value.value
 
     def value_to_string(self, obj):
+        """
+        This method is neede to support proper serialization. While its name is value_to_string()
+        the real mening of the method is to convert the value to some serizlizable format.
+        Since most of the enum values are strings or integers we WILL NOT convert it to string
+        to enable integers to be serizlized natively.
+        """
         value = self._get_val_from_obj(obj)
-        return str(value.value) if value else None
+        return value.value if value else None
 
 
 
@@ -52,6 +58,8 @@ class EnumIntegerField(EnumFieldMixin, models.IntegerField):
             return value.value
         else:
             return int(value)
+
+
 
 
 # South compatibility stuff
