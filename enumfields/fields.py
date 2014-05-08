@@ -34,6 +34,11 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
     def get_prep_value(self, value):
         return None if value is None else value.value
 
+    def value_to_string(self, obj):
+        value = self._get_val_from_obj(obj)
+        return str(value.value) if value else None
+
+
 
 class EnumField(EnumFieldMixin, models.CharField):
     pass
