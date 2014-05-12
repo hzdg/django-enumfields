@@ -2,10 +2,11 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from enum import Enum
 import six
+from django.db.models.fields import NOT_PROVIDED
 
 
 class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
-    def __init__(self, enum,  choices=None, max_length=10, **options):
+    def __init__(self, enum, choices=None, max_length=10, **options):
         if isinstance(enum, basestring):
             module_name, class_name = enum.rsplit('.', 1)
             module = __import__(module_name, globals(), locals(), [class_name])
@@ -45,7 +46,6 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
         return value.value if value else None
 
 
-
 class EnumField(EnumFieldMixin, models.CharField):
     pass
 
@@ -60,13 +60,14 @@ class EnumIntegerField(EnumFieldMixin, models.IntegerField):
             return int(value)
 
 
-
-
 # South compatibility stuff
 
 def converter_func(enum_class):
     return "'%s.%s'" % (enum_class.__module__, enum_class.__name__)
 
+
+def enum_value(an_enum):
+    return an_enum.value
 
 rules = [
     (
@@ -74,7 +75,8 @@ rules = [
         [],
         {
             "enum": ["enum", {'is_django_function': True, "converter": converter_func}],
-        },
+            "default": ['default', {'default': NOT_PROVIDED, 'ignore_dynamics': True,
+                                    'converter': enum_value}]},
     )
 ]
 
