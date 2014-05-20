@@ -47,10 +47,13 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
 
     def get_default(self):
         if self.has_default():
+            if self.default is None:
+                return None
+
             if isinstance(self.default, Enum):
                 return self.default
-            else:
-                return self.enum(self.default)
+
+            return self.enum(self.default)
 
         return super(EnumFieldMixin, self).get_default()
 
