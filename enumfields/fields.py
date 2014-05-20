@@ -28,7 +28,7 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
         for m in self.enum:
             if value == m:
                 return value
-            if value == m.value:
+            if value == m.value or str(value) == str(m.value):
                 return m
         raise ValidationError('%s is not a valid value for enum %s' % (value, self.enum))
 
@@ -45,6 +45,15 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
         value = self._get_val_from_obj(obj)
         return value.value if value else None
 
+    def get_default(self):
+        if self.has_default():
+            if isinstance(self.default, Enum):
+                return self.default
+            else:
+                return self.enum(self.default)
+
+        return super(EnumFieldMixin, self).get_default()
+
 
 class EnumField(EnumFieldMixin, models.CharField):
     pass
@@ -58,6 +67,7 @@ class EnumIntegerField(EnumFieldMixin, models.IntegerField):
             return value.value
         else:
             return int(value)
+
 
 
 # South compatibility stuff
