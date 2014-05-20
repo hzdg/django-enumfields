@@ -1,7 +1,7 @@
 from django.db import connection
 from enumfields import Enum
 import pytest
-from .models import MyModel
+from .models import MyModel, MyModelWithDefault
 
 
 def test_choices():
@@ -37,7 +37,7 @@ def test_field_value():
     m = MyModel(color=MyModel.Color.RED)
     m.save()
     assert m.color == MyModel.Color.RED
-
+    
     m = MyModel.objects.filter(color=MyModel.Color.RED)[0]
     assert m.color == MyModel.Color.RED
 
@@ -49,3 +49,10 @@ def test_db_value():
     cursor = connection.cursor()
     cursor.execute('SELECT color FROM %s WHERE id = %%s' % MyModel._meta.db_table, [m.pk])
     assert cursor.fetchone()[0] == MyModel.Color.RED.value
+
+@pytest.mark.django_db
+def test_default():
+    m = MyModelWithDefault()
+    m.save()
+    assert m.color == MyModelWithDefault.Color.RED
+    assert m.num == MyModelWithDefault.Nums.ONE
