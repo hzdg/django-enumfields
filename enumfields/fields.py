@@ -7,7 +7,7 @@ from django.db.models.fields import NOT_PROVIDED
 
 class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
     def __init__(self, enum, choices=None, max_length=10, **options):
-        if isinstance(enum, basestring):
+        if isinstance(enum, six.string_types):
             module_name, class_name = enum.rsplit('.', 1)
             module = __import__(module_name, globals(), locals(), [class_name])
             self.enum = getattr(module, class_name)
@@ -37,7 +37,7 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
 
     def value_to_string(self, obj):
         """
-        This method is neede to support proper serialization. While its name is value_to_string()
+        This method is needed to support proper serialization. While its name is value_to_string()
         the real mening of the method is to convert the value to some serizlizable format.
         Since most of the enum values are strings or integers we WILL NOT convert it to string
         to enable integers to be serizlized natively.
