@@ -37,7 +37,7 @@ def test_field_value():
     m = MyModel(color=MyModel.Color.RED)
     m.save()
     assert m.color == MyModel.Color.RED
-
+    
     m = MyModel.objects.filter(color=MyModel.Color.RED)[0]
     assert m.color == MyModel.Color.RED
 
