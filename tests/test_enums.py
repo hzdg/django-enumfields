@@ -37,7 +37,7 @@ def test_field_value():
     m = MyModel(color=MyModel.Color.RED)
     m.save()
     assert m.color == MyModel.Color.RED
-    
+
     m = MyModel.objects.filter(color=MyModel.Color.RED)[0]
     assert m.color == MyModel.Color.RED
 
@@ -49,3 +49,22 @@ def test_db_value():
     cursor = connection.cursor()
     cursor.execute('SELECT color FROM %s WHERE id = %%s' % MyModel._meta.db_table, [m.pk])
     assert cursor.fetchone()[0] == MyModel.Color.RED.value
+
+@pytest.mark.django_db
+def test_choices_no_label():
+    class Color(Enum):
+        __order__ = 'RED GREEN'
+        RED = 'r'
+        GREEN = 'g'
+
+        class Labels:
+            RED = 'A custom label'
+
+    COLOR_CHOICES = (
+        ('r', 'A custom label'),
+        ('g', 'Green')
+    )
+
+    assert Color.choices() == COLOR_CHOICES
+
+

@@ -1,3 +1,4 @@
+import inspect
 from enum import Enum as BaseEnum, EnumMeta as BaseEnumMeta
 import six
 
@@ -5,12 +6,17 @@ import six
 class EnumMeta(BaseEnumMeta):
     def __new__(cls, name, bases, attrs):
         Labels = attrs.get('Labels')
+
+        if Labels is not None and inspect.isclass(Labels):
+            del attrs['Labels']
+
         obj = BaseEnumMeta.__new__(cls, name, bases, attrs)
         for m in obj:
             try:
                 m.label = getattr(Labels, m.name)
             except AttributeError:
                 m.label = m.name.replace('_', ' ').title()
+
         return obj
 
 
