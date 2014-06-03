@@ -1,7 +1,8 @@
 SECRET_KEY = 'SEKRIT'
 
 INSTALLED_APPS = (
-    'tests',
+    'django.contrib.contenttypes',
+    'tests'
 )
 
 DATABASES = {
@@ -10,3 +11,4 @@ DATABASES = {
         'NAME': 'enumfields.db',
     },
 }
+

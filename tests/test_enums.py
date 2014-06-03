@@ -74,15 +74,14 @@ def test_choices_no_label():
 
 @pytest.mark.django_db
 def test_model_admin():
-    mymodel_admin = MyModelAdmin(model=MyModel, admin_site=myadminsite)
+    mymodel_admin = MyModelAdmin(MyModel, myadminsite)
     mock_user = mock.MagicMock(autospec=User)
     mock_user.is_authenticated = mock.Mock(return_value=True)
     request = HttpRequest()
+    request.REQUEST = {}
     request.user = mock_user
     request._dont_enforce_csrf_checks = True
     add_view = csrf_exempt(mymodel_admin.add_view)
     view = add_view(request)
-    print(view.content)
-
 
 

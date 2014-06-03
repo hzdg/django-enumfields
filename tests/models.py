@@ -4,7 +4,7 @@ from enumfields import EnumField, EnumIntegerField
 
 
 class MyModel(models.Model):
-
+    
     class Color(Enum):
         RED = 'r'
         GREEN = 'g'

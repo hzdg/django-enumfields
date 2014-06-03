@@ -1,4 +1,5 @@
 import inspect
+from django.utils.encoding import python_2_unicode_compatible, force_bytes
 from enum import Enum as BaseEnum, EnumMeta as BaseEnumMeta
 import six
 
@@ -19,7 +20,7 @@ class EnumMeta(BaseEnumMeta):
 
         return obj
 
-
+@python_2_unicode_compatible
 class Enum(six.with_metaclass(EnumMeta, BaseEnum)):
     @classmethod
     def choices(cls):
@@ -28,3 +29,10 @@ class Enum(six.with_metaclass(EnumMeta, BaseEnum)):
         (See https://docs.djangoproject.com/en/dev/ref/models/fields/#choices)
         """
         return tuple((m.value, m.label) for m in cls)
+
+    def __str__(self):
+        """
+        Show our label when Django uses the Enum for displaying in an error message
+        """
+        return force_bytes(self.label)
+
