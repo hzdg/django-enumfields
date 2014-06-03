@@ -38,9 +38,9 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
     def value_to_string(self, obj):
         """
         This method is needed to support proper serialization. While its name is value_to_string()
-        the real mening of the method is to convert the value to some serizlizable format.
+        the real meaning of the method is to convert the value to some serializable format.
         Since most of the enum values are strings or integers we WILL NOT convert it to string
-        to enable integers to be serizlized natively.
+        to enable integers to be serialized natively.
         """
         value = self._get_val_from_obj(obj)
         return value.value if value else None
