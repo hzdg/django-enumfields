@@ -55,7 +55,10 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
 
 
 class EnumField(EnumFieldMixin, models.CharField):
-    pass
+    def __init__(self, enum, *args, **kwargs):
+        super(EnumField, self).__init__(enum, **kwargs)
+        self.validators = []
+
 
 
 class EnumIntegerField(EnumFieldMixin, models.IntegerField):

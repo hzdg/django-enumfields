@@ -1,12 +1,11 @@
+from django.contrib.auth import get_user_model
+from django.core.urlresolvers import reverse
 from django.db import connection
-from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.models import User
-from enumfields import Enum
+from django.test import Client
 import pytest
+
+from enumfields import Enum
 from .models import MyModel
-from .admin import MyModelAdmin, myadminsite
-from django.http import HttpRequest
-import mock
 
 
 def test_choices():
@@ -42,7 +41,7 @@ def test_field_value():
     m = MyModel(color=MyModel.Color.RED)
     m.save()
     assert m.color == MyModel.Color.RED
-    
+
     m = MyModel.objects.filter(color=MyModel.Color.RED)[0]
     assert m.color == MyModel.Color.RED
 
@@ -55,16 +54,41 @@ def test_db_value():
     cursor.execute('SELECT color FROM %s WHERE id = %%s' % MyModel._meta.db_table, [m.pk])
     assert cursor.fetchone()[0] == MyModel.Color.RED.value
 
-@pytest.mark.django_db
-def test_model_admin():
-    mymodel_admin = MyModelAdmin(model=MyModel, admin_site=myadminsite)
-    mock_user = mock.MagicMock(autospec=User)
-    mock_user.is_authenticated = mock.Mock(return_value=True)
-    request = HttpRequest()
-    request.user = mock_user
-    request._dont_enforce_csrf_checks = True
-    add_view = csrf_exempt(mymodel_admin.add_view)
-    view = add_view(request)
-    print(view.content)
 
+@pytest.fixture
+def client():
+    return Client()
+
+
+SUPERUSER_USERNAME = "superuser"
+SUPERUSER_PASS = "superpass"
+
+
+@pytest.fixture
+def superuser():
+    return get_user_model().objects.create_superuser(username=SUPERUSER_USERNAME, password=SUPERUSER_PASS,
+                                                     email="billgates@microsoft.com")
+
+
+@pytest.fixture
+def superuser_client(client, superuser):
+    client.login(username=SUPERUSER_USERNAME, password=SUPERUSER_PASS)
+    return client
+
+
+@pytest.mark.django_db
+@pytest.mark.urls('tests.urls')
+def test_model_admin(superuser_client):
+    url = reverse("admin:tests_mymodel_add")
+    response = superuser_client.post(url, follow=True, data={
+        'color': 'Color.RED',
+        'taste': 'Taste.UMAMI',
+        'taste_int': 'Taste.SWEET'
+    })
+    response.render()
+    text = response.content
+
+    assert "This field is required" not in text
+    assert "Select a valid choice" not in text
+    print(text)
 

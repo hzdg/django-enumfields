@@ -6,3 +6,5 @@
 /MANIFEST
 /venv
 /enumfields.db
+
+/tests/test.db
