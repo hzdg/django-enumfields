@@ -14,13 +14,9 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
         else:
             self.enum = enum
 
-        if not choices:
-            try:
-                choices = self.enum.choices()
-            except AttributeError:
-                choices = [(m.value, getattr(m, 'label', m.name)) for m in self.enum]
-        super(EnumFieldMixin, self).__init__(
-            choices=choices, max_length=max_length, **options)
+        choices = [(i, i.name) for i in self.enum]  # choices for the TypedChoiceField
+
+        super(EnumFieldMixin, self).__init__(choices=choices, max_length=max_length, **options)
 
     def to_python(self, value):
         if value is None:
@@ -28,7 +24,7 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
         for m in self.enum:
             if value == m:
                 return value
-            if value == m.value or str(value) == str(m.value):
+            if value == m.value or str(value) == str(m.value) or str(value) == str(m):
                 return m
         raise ValidationError('%s is not a valid value for enum %s' % (value, self.enum))
 
@@ -72,7 +68,6 @@ class EnumIntegerField(EnumFieldMixin, models.IntegerField):
             return int(value)
 
 
-
 # South compatibility stuff
 
 def converter_func(enum_class):
@@ -81,6 +76,7 @@ def converter_func(enum_class):
 
 def enum_value(an_enum):
     return an_enum.value
+
 
 rules = [
     (
