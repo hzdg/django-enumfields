@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.db import connection
@@ -80,15 +82,19 @@ def superuser_client(client, superuser):
 @pytest.mark.urls('tests.urls')
 def test_model_admin(superuser_client):
     url = reverse("admin:tests_mymodel_add")
+    secret_uuid = str(uuid.uuid4())
     response = superuser_client.post(url, follow=True, data={
         'color': 'Color.RED',
         'taste': 'Taste.UMAMI',
-        'taste_int': 'Taste.SWEET'
+        'taste_int': 'Taste.SWEET',
+        'random_code': secret_uuid
     })
     response.render()
     text = response.content
 
     assert "This field is required" not in text
     assert "Select a valid choice" not in text
-    print(text)
+    assert MyModel.objects.filter(random_code=secret_uuid).exists(), "Object wasn't created in the database"
+
+
 

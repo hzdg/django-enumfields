@@ -24,3 +24,5 @@ class MyModel(models.Model):
 
     default_none = EnumIntegerField(Taste, default=None, null=True, blank=True)
     nullable = EnumIntegerField(Taste, null=True, blank=True)
+
+    random_code = models.TextField(null=True, blank=True)
