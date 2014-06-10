@@ -22,4 +22,7 @@ class MyModel(models.Model):
     taste = EnumField(Taste, default=Taste.SWEET)
     taste_int = EnumIntegerField(Taste, default=Taste.SWEET)
 
-    default_none = EnumIntegerField(Taste, default=None, null=True)
+    default_none = EnumIntegerField(Taste, default=None, null=True, blank=True)
+    nullable = EnumIntegerField(Taste, null=True, blank=True)
+
+    random_code = models.TextField(null=True, blank=True)

@@ -1,6 +1,12 @@
+import uuid
+
+from django.contrib.auth import get_user_model
+from django.core.urlresolvers import reverse
 from django.db import connection
-from enumfields import Enum
+from django.test import Client
 import pytest
+
+from enumfields import Enum
 from .models import MyModel
 
 
@@ -50,21 +56,45 @@ def test_db_value():
     cursor.execute('SELECT color FROM %s WHERE id = %%s' % MyModel._meta.db_table, [m.pk])
     assert cursor.fetchone()[0] == MyModel.Color.RED.value
 
+
+@pytest.fixture
+def client():
+    return Client()
+
+
+SUPERUSER_USERNAME = "superuser"
+SUPERUSER_PASS = "superpass"
+
+
+@pytest.fixture
+def superuser():
+    return get_user_model().objects.create_superuser(username=SUPERUSER_USERNAME, password=SUPERUSER_PASS,
+                                                     email="billgates@microsoft.com")
+
+
+@pytest.fixture
+def superuser_client(client, superuser):
+    client.login(username=SUPERUSER_USERNAME, password=SUPERUSER_PASS)
+    return client
+
+
 @pytest.mark.django_db
-def test_choices_no_label():
-    class Color(Enum):
-        __order__ = 'RED GREEN'
-        RED = 'r'
-        GREEN = 'g'
+@pytest.mark.urls('tests.urls')
+def test_model_admin(superuser_client):
+    url = reverse("admin:tests_mymodel_add")
+    secret_uuid = str(uuid.uuid4())
+    response = superuser_client.post(url, follow=True, data={
+        'color': 'Color.RED',
+        'taste': 'Taste.UMAMI',
+        'taste_int': 'Taste.SWEET',
+        'random_code': secret_uuid
+    })
+    response.render()
+    text = response.content
 
-        class Labels:
-            RED = 'A custom label'
+    assert "This field is required" not in text
+    assert "Select a valid choice" not in text
+    assert MyModel.objects.filter(random_code=secret_uuid).exists(), "Object wasn't created in the database"
 
-    COLOR_CHOICES = (
-        ('r', 'A custom label'),
-        ('g', 'Green')
-    )
-
-    assert Color.choices() == COLOR_CHOICES
 
 
