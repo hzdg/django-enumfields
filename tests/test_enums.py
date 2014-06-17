@@ -83,10 +83,11 @@ def superuser_client(client, superuser):
 def test_model_admin(superuser_client):
     url = reverse("admin:tests_mymodel_add")
     secret_uuid = str(uuid.uuid4())
+
     response = superuser_client.post(url, follow=True, data={
-        'color': 'Color.RED',
-        'taste': 'Taste.UMAMI',
-        'taste_int': 'Taste.SWEET',
+        'color': MyModel.Color.RED.value,
+        'taste': MyModel.Taste.UMAMI.value,
+        'taste_int': MyModel.Taste.SWEET.value,
         'random_code': secret_uuid
     })
     response.render()
