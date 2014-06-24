@@ -92,8 +92,8 @@ def test_model_admin(superuser_client):
     response.render()
     text = response.content
 
-    assert "This field is required" not in text
-    assert "Select a valid choice" not in text
+    assert b"This field is required" not in text
+    assert b"Select a valid choice" not in text
     assert MyModel.objects.filter(random_code=secret_uuid).exists(), "Object wasn't created in the database"
 
 
