@@ -10,6 +10,8 @@ class EnumMeta(BaseEnumMeta):
 
         if Labels is not None and inspect.isclass(Labels):
             del attrs['Labels']
+            if hasattr(attrs, '_member_names'):
+                attrs._member_names.remove('Labels')
 
         obj = BaseEnumMeta.__new__(cls, name, bases, attrs)
         for m in obj:
