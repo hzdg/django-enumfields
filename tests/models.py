@@ -4,7 +4,6 @@ from enumfields import EnumField, EnumIntegerField
 
 
 class MyModel(models.Model):
-
     class Color(Enum):
         RED = 'r'
         GREEN = 'g'
@@ -20,6 +19,7 @@ class MyModel(models.Model):
         UMAMI = 5
 
     taste = EnumField(Taste, default=Taste.SWEET)
+    taste_null_default = EnumField(Taste, null=True, blank=True, default=None)
     taste_int = EnumIntegerField(Taste, default=Taste.SWEET)
 
     default_none = EnumIntegerField(Taste, default=None, null=True, blank=True)

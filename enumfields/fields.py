@@ -65,10 +65,14 @@ class EnumIntegerField(EnumFieldMixin, models.IntegerField):
     def get_prep_value(self, value):
         if value is None:
             return None
-        elif isinstance(value, Enum):
+
+        if isinstance(value, Enum):
             return value.value
-        else:
+
+        try:
             return int(value)
+        except ValueError:
+            return self.to_python(value).value
 
 
 # South compatibility stuff
