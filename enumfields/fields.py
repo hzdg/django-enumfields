@@ -53,6 +53,11 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
 
         return super(EnumFieldMixin, self).get_default()
 
+    def deconstruct(self):
+        name, path, args, kwargs = super(EnumFieldMixin, self).deconstruct()
+        kwargs['enum'] = self.enum
+        return name, path, args, kwargs
+
 
 class EnumField(EnumFieldMixin, models.CharField):
     def __init__(self, enum, *args, **kwargs):
