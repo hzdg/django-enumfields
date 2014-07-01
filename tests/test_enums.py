@@ -7,6 +7,7 @@ from django.test import Client
 import pytest
 
 from enumfields import Enum
+from enumfields.fields import EnumIntegerField
 from .models import MyModel
 
 
@@ -96,5 +97,10 @@ def test_model_admin(superuser_client):
     assert b"Select a valid choice" not in text
     assert MyModel.objects.filter(random_code=secret_uuid).exists(), "Object wasn't created in the database"
 
+
+def test_django_admin_lookup_value_for_integer_enum_field():
+    field = EnumIntegerField(MyModel.Taste)
+
+    assert field.get_prep_value(str(MyModel.Taste.BITTER)) == 3, "get_prep_value should be able to convert from strings"
 
 
