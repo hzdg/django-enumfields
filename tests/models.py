@@ -18,6 +18,10 @@ class MyModel(models.Model):
         SALTY = 4
         UMAMI = 5
 
+    class ZeroEnum(Enum):
+        ZERO = 0
+        ONE = 1
+
     taste = EnumField(Taste, default=Taste.SWEET)
     taste_null_default = EnumField(Taste, null=True, blank=True, default=None)
     taste_int = EnumIntegerField(Taste, default=Taste.SWEET)
@@ -26,3 +30,5 @@ class MyModel(models.Model):
     nullable = EnumIntegerField(Taste, null=True, blank=True)
 
     random_code = models.TextField(null=True, blank=True)
+
+    zero_field = EnumIntegerField(ZeroEnum, null=True, default=None, blank=True)

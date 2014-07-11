@@ -104,3 +104,13 @@ def test_django_admin_lookup_value_for_integer_enum_field():
     assert field.get_prep_value(str(MyModel.Taste.BITTER)) == 3, "get_prep_value should be able to convert from strings"
 
 
+@pytest.mark.django_db
+def test_zero_enum_loads():
+    # Verifies that we can save and load enums with the value of 0 (zero).
+    m = MyModel(zero_field=MyModel.ZeroEnum.ZERO,
+                color=MyModel.Color.GREEN)
+    m.save()
+    assert m.zero_field == MyModel.ZeroEnum.ZERO
+
+    m = MyModel.objects.get(id=m.id)
+    assert m.zero_field == MyModel.ZeroEnum.ZERO
