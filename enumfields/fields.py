@@ -19,7 +19,7 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
         super(EnumFieldMixin, self).__init__(choices=choices, max_length=max_length, **options)
 
     def to_python(self, value):
-        if not value:
+        if value is None or value == '':
             return None
         for m in self.enum:
             if value == m:
