@@ -1,5 +1,5 @@
 import inspect
-from django.utils.encoding import force_bytes, python_2_unicode_compatible
+from django.utils.encoding import python_2_unicode_compatible
 from enum import Enum as BaseEnum, EnumMeta as BaseEnumMeta
 import six
 
@@ -37,4 +37,4 @@ class Enum(six.with_metaclass(EnumMeta, BaseEnum)):
         """
         Show our label when Django uses the Enum for displaying in a view
         """
-        return force_bytes(self.label)
+        return self.label
