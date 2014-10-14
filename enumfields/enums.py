@@ -1,11 +1,10 @@
 import inspect
 from django.utils.encoding import force_bytes, python_2_unicode_compatible
-from enum import Enum as BaseEnum, EnumMeta as BaseEnumMeta
-import six
+from enum import Enum as BaseEnum, EnumMeta as BaseEnumMeta, _EnumDict
 
 
 class EnumMeta(BaseEnumMeta):
-    def __new__(cls, name, bases, attrs):
+    def __new__(mcs, name, bases, attrs):
         Labels = attrs.get('Labels')
 
         if Labels is not None and inspect.isclass(Labels):
@@ -13,7 +12,7 @@ class EnumMeta(BaseEnumMeta):
             if hasattr(attrs, '_member_names'):
                 attrs._member_names.remove('Labels')
 
-        obj = BaseEnumMeta.__new__(cls, name, bases, attrs)
+        obj = BaseEnumMeta.__new__(mcs, name, bases, attrs)
         for m in obj:
             try:
                 m.label = getattr(Labels, m.name)
@@ -24,7 +23,7 @@ class EnumMeta(BaseEnumMeta):
 
 
 @python_2_unicode_compatible
-class Enum(six.with_metaclass(EnumMeta, BaseEnum)):
+class Enum(EnumMeta('Enum', (BaseEnum,), _EnumDict())):
     @classmethod
     def choices(cls):
         """
