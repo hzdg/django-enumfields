@@ -25,6 +25,14 @@ class PyTest(TestCommand):
         errno = pytest.main(self.test_args)
         sys.exit(errno)
 
+install_requires = []
+try:
+    import enum
+except ImportError:
+    install_requires.extend([
+        'enum34',
+        'six',
+    ])
 
 setup(
     name='django-enumfields',
@@ -45,10 +53,7 @@ setup(
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP',
     ],
-    install_requires=[
-        'enum34',
-        'six',
-    ],
+    install_requires=install_requires,
     tests_require=[
         'pytest-django',
         'Django',
