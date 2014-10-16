@@ -25,14 +25,11 @@ class PyTest(TestCommand):
         errno = pytest.main(self.test_args)
         sys.exit(errno)
 
-install_requires = []
+install_requires = ['six']
 try:
     import enum
 except ImportError:
-    install_requires.extend([
-        'enum34',
-        'six',
-    ])
+    install_requires.append('enum34')
 
 setup(
     name='django-enumfields',
