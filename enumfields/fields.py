@@ -4,13 +4,16 @@ from enum import Enum
 import six
 from django.db.models.fields import NOT_PROVIDED
 
+try:
+    from django.utils.module_loading import import_string
+except ImportError:
+    from django.utils.module_loading import import_by_path as import_string
+
 
 class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
     def __init__(self, enum, **options):
         if isinstance(enum, six.string_types):
-            module_name, class_name = enum.rsplit('.', 1)
-            module = __import__(module_name, globals(), locals(), [class_name])
-            self.enum = getattr(module, class_name)
+            self.enum = import_string(enum)
         else:
             self.enum = enum
 
@@ -70,7 +73,6 @@ class EnumField(EnumFieldMixin, models.CharField):
         kwargs.setdefault("max_length", 10)
         super(EnumField, self).__init__(enum, **kwargs)
         self.validators = []
-
 
 
 class EnumIntegerField(EnumFieldMixin, models.IntegerField):
