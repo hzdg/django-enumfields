@@ -17,6 +17,12 @@ DATABASES = {
     },
 }
 
+MIDDLEWARE_CLASSES = (
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+)
+
 DEBUG = True
 
 STATIC_URL = "/static/"
