@@ -4,19 +4,23 @@ from enum import Enum
 import six
 from django.db.models.fields import NOT_PROVIDED
 
+try:
+    from django.utils.module_loading import import_string
+except ImportError:
+    from django.utils.module_loading import import_by_path as import_string
+
 
 class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
-    def __init__(self, enum, choices=None, max_length=10, **options):
+    def __init__(self, enum, **options):
         if isinstance(enum, six.string_types):
-            module_name, class_name = enum.rsplit('.', 1)
-            module = __import__(module_name, globals(), locals(), [class_name])
-            self.enum = getattr(module, class_name)
+            self.enum = import_string(enum)
         else:
             self.enum = enum
 
-        choices = [(i, i.name) for i in self.enum]  # choices for the TypedChoiceField
+        if "choices" not in options:
+            options["choices"] = [(i, i.name) for i in self.enum]  # choices for the TypedChoiceField
 
-        super(EnumFieldMixin, self).__init__(choices=choices, max_length=max_length, **options)
+        super(EnumFieldMixin, self).__init__(**options)
 
     def to_python(self, value):
         if value is None or value == '':
@@ -56,16 +60,19 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
     def deconstruct(self):
         name, path, args, kwargs = super(EnumFieldMixin, self).deconstruct()
         kwargs['enum'] = self.enum
-        if 'choices' in kwargs:
-            del kwargs['choices']
+        kwargs.pop('choices', None)
+        if 'default' in kwargs:
+            if hasattr(kwargs["default"], "value"):
+                kwargs["default"] = kwargs["default"].value
+
         return name, path, args, kwargs
 
 
 class EnumField(EnumFieldMixin, models.CharField):
     def __init__(self, enum, *args, **kwargs):
+        kwargs.setdefault("max_length", 10)
         super(EnumField, self).__init__(enum, **kwargs)
         self.validators = []
-
 
 
 class EnumIntegerField(EnumFieldMixin, models.IntegerField):
