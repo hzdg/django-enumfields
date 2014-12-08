@@ -6,7 +6,7 @@ from django.db.models.fields import NOT_PROVIDED
 
 
 class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
-    def __init__(self, enum, choices=None, max_length=10, **options):
+    def __init__(self, enum, choices=None, **options):
         if isinstance(enum, six.string_types):
             module_name, class_name = enum.rsplit('.', 1)
             module = __import__(module_name, globals(), locals(), [class_name])
@@ -16,7 +16,7 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
 
         choices = [(i, i.name) for i in self.enum]  # choices for the TypedChoiceField
 
-        super(EnumFieldMixin, self).__init__(choices=choices, max_length=max_length, **options)
+        super(EnumFieldMixin, self).__init__(choices=choices, **options)
 
     def to_python(self, value):
         if value is None or value == '':
@@ -66,6 +66,7 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
 
 class EnumField(EnumFieldMixin, models.CharField):
     def __init__(self, enum, *args, **kwargs):
+        kwargs.setdefault("max_length", 10)
         super(EnumField, self).__init__(enum, **kwargs)
         self.validators = []
 
