@@ -56,8 +56,11 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
     def deconstruct(self):
         name, path, args, kwargs = super(EnumFieldMixin, self).deconstruct()
         kwargs['enum'] = self.enum
-        if 'choices' in kwargs:
-            del kwargs['choices']
+        kwargs.pop('choices', None)
+        if 'default' in kwargs:
+            if hasattr(kwargs["default"], "value"):
+                kwargs["default"] = kwargs["default"].value
+
         return name, path, args, kwargs
 
 
