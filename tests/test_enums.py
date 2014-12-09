@@ -1,14 +1,18 @@
+# -- encoding: UTF-8 --
+
 import uuid
 
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.db import connection
 from django.test import Client
+from django.utils.translation import ugettext_lazy
 import pytest
 
 from enumfields import Enum
 from enumfields.fields import EnumIntegerField
 from .models import MyModel
+import six
 
 
 def test_choices():
@@ -31,12 +35,23 @@ def test_labels():
     class Color(Enum):
         RED = 'r'
         GREEN = 'g'
+        BLUE = 'b'
 
         class Labels:
             RED = 'A custom label'
+            BLUE = ugettext_lazy(u'bluë')
 
+    # Custom label
     assert Color.RED.label == 'A custom label'
+    assert six.text_type(Color.RED) == 'A custom label'
+
+    # Automatic label
     assert Color.GREEN.label == 'Green'
+    assert six.text_type(Color.GREEN) == 'Green'
+
+    # Lazy label
+    assert isinstance(six.text_type(Color.BLUE), six.string_types)
+    assert six.text_type(Color.BLUE) == u'bluë'
 
 
 @pytest.mark.django_db

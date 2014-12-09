@@ -2,6 +2,11 @@ import inspect
 from django.utils.encoding import python_2_unicode_compatible
 from enum import Enum as BaseEnum, EnumMeta as BaseEnumMeta, _EnumDict
 
+try:
+    from django.utils.encoding import force_text
+except ImportError:
+    from django.utils.encoding import force_unicode as force_text
+
 
 class EnumMeta(BaseEnumMeta):
     def __new__(mcs, name, bases, attrs):
@@ -36,4 +41,4 @@ class Enum(EnumMeta('Enum', (BaseEnum,), _EnumDict())):
         """
         Show our label when Django uses the Enum for displaying in a view
         """
-        return self.label
+        return force_text(self.label)
