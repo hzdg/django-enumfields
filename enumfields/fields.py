@@ -18,7 +18,7 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
             self.enum = enum
 
         if "choices" not in options:
-            options["choices"] = [(i, i.name) for i in self.enum]  # choices for the TypedChoiceField
+            options["choices"] = [(i, getattr(i, 'label', i.name)) for i in self.enum]  # choices for the TypedChoiceField
 
         super(EnumFieldMixin, self).__init__(**options)
 
