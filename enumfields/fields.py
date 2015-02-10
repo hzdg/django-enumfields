@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from enum import Enum
 import six
-from django.db.models.fields import NOT_PROVIDED
+from django.db.models.fields import NOT_PROVIDED, BLANK_CHOICE_DASH
 
 try:
     from django.utils.module_loading import import_string
@@ -18,7 +18,7 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
             self.enum = enum
 
         if "choices" not in options:
-            options["choices"] = [(i, i.name) for i in self.enum]  # choices for the TypedChoiceField
+            options["choices"] = [(i, getattr(i, 'label', i.name)) for i in self.enum]  # choices for the TypedChoiceField
 
         super(EnumFieldMixin, self).__init__(**options)
 
@@ -66,6 +66,15 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
                 kwargs["default"] = kwargs["default"].value
 
         return name, path, args, kwargs
+
+    def get_choices(self, include_blank=True, blank_choice=BLANK_CHOICE_DASH):
+        # Force enum fields' options to use the `value` of the enumeration
+        # member as the `value` of SelectFields and similar.
+        return [
+            (i.value if i else i, display)
+            for (i, display)
+            in super(EnumFieldMixin, self).get_choices(include_blank, blank_choice)
+        ]
 
 
 class EnumField(EnumFieldMixin, models.CharField):
