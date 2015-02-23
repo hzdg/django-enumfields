@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from enum import Enum
+from .forms import EnumChoiceField
 import six
 from django.db.models.fields import NOT_PROVIDED, BLANK_CHOICE_DASH
 
@@ -75,6 +76,11 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
             for (i, display)
             in super(EnumFieldMixin, self).get_choices(include_blank, blank_choice)
         ]
+
+    def formfield(self, form_class=None, choices_form_class=None, **kwargs):
+        if not choices_form_class:
+            choices_form_class = EnumChoiceField
+        return super(EnumFieldMixin, self).formfield(form_class=form_class, choices_form_class=choices_form_class, **kwargs)
 
 
 class EnumField(EnumFieldMixin, models.CharField):
