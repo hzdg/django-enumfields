@@ -34,3 +34,13 @@ def test_zero_enum_loads():
 
     m = MyModel.objects.get(id=m.id)
     assert m.zero_field == MyModel.ZeroEnum.ZERO
+
+
+def test_serialization():
+    from django.core.serializers.python import Serializer as PythonSerializer
+    m = MyModel(color=MyModel.Color.RED, taste=MyModel.Taste.SALTY)
+    ser = PythonSerializer()
+    ser.serialize([m])
+    fields = ser.getvalue()[0]["fields"]
+    assert fields["color"] == m.color.value
+    assert fields["taste"] == m.taste.value
