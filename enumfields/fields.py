@@ -1,3 +1,4 @@
+import django
 from django.core.exceptions import ValidationError
 from django.db import models
 from enum import Enum
@@ -80,6 +81,14 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
     def formfield(self, form_class=None, choices_form_class=None, **kwargs):
         if not choices_form_class:
             choices_form_class = EnumChoiceField
+
+        if django.VERSION < (1, 6):
+            # Use a better-compatible implementation of `formfield` for old versions of Django.
+            # It's unfortunate that we need to do this, but since the project supports Django 1.5,
+            # we have to do it.
+            from .compat import formfield
+            return formfield(db_field=self, form_class=form_class, choices_form_class=choices_form_class, **kwargs)
+
         return super(EnumFieldMixin, self).formfield(form_class=form_class, choices_form_class=choices_form_class, **kwargs)
 
 
