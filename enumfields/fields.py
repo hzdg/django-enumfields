@@ -6,11 +6,7 @@ from .forms import EnumChoiceField
 import six
 from django.db.models.fields import NOT_PROVIDED, BLANK_CHOICE_DASH
 
-try:
-    from django.utils.module_loading import import_string
-except ImportError:
-    from django.utils.module_loading import import_by_path as import_string
-
+from .compat import import_string
 
 class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
     def __init__(self, enum, **options):

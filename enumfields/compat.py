@@ -48,3 +48,19 @@ def formfield(db_field, form_class=None, choices_form_class=None, **kwargs):
     if form_class is None:
         form_class = CharField
     return form_class(**defaults)
+
+# This is a bare-bones implementation of `import_string`, as
+# implemented in Django commit f95122e541df5bebb9b5ebb6226b0013e5edc893.
+
+try:
+    try:
+        from django.utils.module_loading import import_string
+    except ImportError:
+        from django.utils.module_loading import import_by_path as import_string
+except ImportError:
+    from django.utils.importlib import import_module
+    def import_string(dotted_path):
+        module_path, class_name = dotted_path.rsplit('.', 1)
+        module = import_module(module_path)
+        return getattr(module, class_name)
+
