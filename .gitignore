@@ -4,7 +4,11 @@
 /.env
 /dist
 /MANIFEST
-/venv
-/enumfields.db
-
-/tests/test.db
+/venv*
+*.db
+*.egg-info
+htmlcov/
+.tox/
+.coverage
+.cache
+.idea

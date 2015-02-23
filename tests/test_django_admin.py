@@ -2,7 +2,12 @@
 
 import uuid
 
-from django.contrib.auth import get_user_model
+try:
+    from django.contrib.auth import get_user_model
+except ImportError:  # `get_user_model` only exists from Django 1.5 on.
+    from django.contrib.auth.models import User
+    get_user_model = lambda: User
+
 from django.core.urlresolvers import reverse
 from django.test import Client
 import pytest

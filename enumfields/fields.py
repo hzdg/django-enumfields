@@ -1,14 +1,12 @@
+import django
 from django.core.exceptions import ValidationError
 from django.db import models
 from enum import Enum
+from .forms import EnumChoiceField
 import six
 from django.db.models.fields import NOT_PROVIDED, BLANK_CHOICE_DASH
 
-try:
-    from django.utils.module_loading import import_string
-except ImportError:
-    from django.utils.module_loading import import_by_path as import_string
-
+from .compat import import_string
 
 class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
     def __init__(self, enum, **options):
@@ -30,7 +28,7 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
                 return value
             if value == m.value or str(value) == str(m.value) or str(value) == str(m):
                 return m
-        raise ValidationError('%s is not a valid value for enum %s' % (value, self.enum))
+        raise ValidationError('%s is not a valid value for enum %s' % (value, self.enum), code="invalid_enum_value")
 
     def get_prep_value(self, value):
         return None if value is None else value.value
@@ -75,6 +73,19 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
             for (i, display)
             in super(EnumFieldMixin, self).get_choices(include_blank, blank_choice)
         ]
+
+    def formfield(self, form_class=None, choices_form_class=None, **kwargs):
+        if not choices_form_class:
+            choices_form_class = EnumChoiceField
+
+        if django.VERSION < (1, 6):
+            # Use a better-compatible implementation of `formfield` for old versions of Django.
+            # It's unfortunate that we need to do this, but since the project supports Django 1.5,
+            # we have to do it.
+            from .compat import formfield
+            return formfield(db_field=self, form_class=form_class, choices_form_class=choices_form_class, **kwargs)
+
+        return super(EnumFieldMixin, self).formfield(form_class=form_class, choices_form_class=choices_form_class, **kwargs)
 
 
 class EnumField(EnumFieldMixin, models.CharField):
