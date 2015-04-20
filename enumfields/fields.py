@@ -1,6 +1,7 @@
 import django
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.functional import cached_property
 from enum import Enum
 from .forms import EnumChoiceField
 import six
@@ -96,6 +97,15 @@ class EnumField(EnumFieldMixin, models.CharField):
 
 
 class EnumIntegerField(EnumFieldMixin, models.IntegerField):
+    @cached_property
+    def validators(self):
+        # Skip IntegerField validators, since they will fail with
+        #   TypeError: unorderable types: TheEnum() < int()
+        # when used database reports min_value or max_value from
+        # connection.ops.integer_field_range method.
+        next = super(models.IntegerField, self)
+        return next.validators
+
     def get_prep_value(self, value):
         if value is None:
             return None
