@@ -126,7 +126,14 @@ def converter_func(enum_class):
 
 
 def enum_value(an_enum):
-    return an_enum.value
+    if an_enum is None:
+        return None
+
+    if isinstance(an_enum, Enum):
+        return an_enum.value
+
+    raise ValueError("%s is not a enum" % an_enum)
+
 
 
 rules = [
