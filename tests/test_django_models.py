@@ -1,7 +1,9 @@
 # -- encoding: UTF-8 --
 
-from django.db import connection
 import pytest
+from django.db import connection
+from enum import IntEnum
+
 from .models import MyModel
 
 
@@ -59,6 +61,16 @@ def test_zero_enum_loads():
 
     m = MyModel.objects.get(id=m.id)
     assert m.zero_field == MyModel.ZeroEnum.ZERO
+
+
+@pytest.mark.django_db
+def test_int_enum():
+    m = MyModel(int_enum=MyModel.IntegerEnum.A, color=MyModel.Color.RED)
+    m.save()
+
+    m = MyModel.objects.get(id=m.id)
+    assert m.int_enum == MyModel.IntegerEnum.A
+    assert isinstance(m.int_enum, MyModel.IntegerEnum)
 
 
 def test_serialization():
