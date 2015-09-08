@@ -20,7 +20,7 @@ EnumField, EnumIntegerField
 .. code-block:: python
 
     from enumfields import EnumField
-    from enum import Enum  # Uses Ethan Furman's "enum34" backport
+    from enumfields import Enum  # Uses Ethan Furman's "enum34" backport
 
     class MyModel(models.Model):
 
