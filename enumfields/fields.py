@@ -31,6 +31,11 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
                 return m
         raise ValidationError('%s is not a valid value for enum %s' % (value, self.enum), code="invalid_enum_value")
 
+    def from_db_value(self, value, expression, connection, context):
+        # Django 1.8+ doesn't call to_python anymore when loading from the database
+        # https://docs.djangoproject.com/en/1.8/howto/custom-model-fields/#converting-values-to-python-objects
+        return self.to_python(value)
+
     def get_prep_value(self, value):
         return None if value is None else value.value
 
