@@ -1,6 +1,7 @@
 from django.db import models
 from enum import Enum, IntEnum
 
+import enumfields
 from enumfields import EnumField, EnumIntegerField
 
 
@@ -27,6 +28,17 @@ class MyModel(models.Model):
         A = 0
         B = 1
 
+    class LabeledEnum(enumfields.Enum):
+        FOO = 'foo'
+        BAR = 'bar'
+        FOOBAR = 'foobar'
+
+        class Labels:
+            FOO = 'Foo'
+            BAR = 'Bar'
+            # this is intentional. see test_nonunique_label
+            FOOBAR = 'Foo'
+
     taste = EnumField(Taste, default=Taste.SWEET)
     taste_null_default = EnumField(Taste, null=True, blank=True, default=None)
     taste_int = EnumIntegerField(Taste, default=Taste.SWEET)
@@ -38,3 +50,5 @@ class MyModel(models.Model):
 
     zero_field = EnumIntegerField(ZeroEnum, null=True, default=None, blank=True)
     int_enum = EnumIntegerField(IntegerEnum, null=True, default=None, blank=True)
+
+    labeled_enum = EnumField(LabeledEnum, blank=True, null=True)

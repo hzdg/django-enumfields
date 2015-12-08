@@ -24,6 +24,8 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
     def to_python(self, value):
         if value is None or value == '':
             return None
+        if isinstance(value, self.enum):
+            return value
         for m in self.enum:
             if value == m:
                 return m

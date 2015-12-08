@@ -81,3 +81,9 @@ def test_serialization():
     fields = ser.getvalue()[0]["fields"]
     assert fields["color"] == m.color.value
     assert fields["taste"] == m.taste.value
+
+
+def test_nonunique_label():
+    obj = MyModel(labeled_enum=MyModel.LabeledEnum.FOOBAR)
+
+    assert obj.labeled_enum is MyModel.LabeledEnum.FOOBAR
