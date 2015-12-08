@@ -28,6 +28,17 @@ class MyModel(models.Model):
         class Labels:
             A = 'foo'
 
+    class LabeledEnum(Enum):
+        FOO = 'foo'
+        BAR = 'bar'
+        FOOBAR = 'foobar'
+
+        class Labels:
+            FOO = 'Foo'
+            BAR = 'Bar'
+            # this is intentional. see test_nonunique_label
+            FOOBAR = 'Foo'
+
     taste = EnumField(Taste, default=Taste.SWEET)
     taste_null_default = EnumField(Taste, null=True, blank=True, default=None)
     taste_int = EnumIntegerField(Taste, default=Taste.SWEET)
@@ -41,3 +52,4 @@ class MyModel(models.Model):
     int_enum = EnumIntegerField(IntegerEnum, null=True, default=None, blank=True)
 
     zero2 = EnumIntegerField(ZeroEnum, default=ZeroEnum.ZERO)
+    labeled_enum = EnumField(LabeledEnum, blank=True, null=True)
