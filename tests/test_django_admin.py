@@ -45,7 +45,8 @@ def test_model_admin(superuser_client):
         'color': MyModel.Color.RED.value,
         'taste': MyModel.Taste.UMAMI.value,
         'taste_int': MyModel.Taste.SWEET.value,
-        'random_code': secret_uuid
+        'random_code': secret_uuid,
+        'zero2': MyModel.ZeroEnum.ZERO.value,
     }
     response = superuser_client.post(url, follow=True, data=post_data)
     response.render()

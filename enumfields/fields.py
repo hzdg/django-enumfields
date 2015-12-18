@@ -70,7 +70,7 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
         # Force enum fields' options to use the `value` of the enumeration
         # member as the `value` of SelectFields and similar.
         return [
-            (i.value if i else i, display)
+            (i.value if isinstance(i, Enum) else i, display)
             for (i, display)
             in super(EnumFieldMixin, self).get_choices(include_blank, blank_choice)
         ]

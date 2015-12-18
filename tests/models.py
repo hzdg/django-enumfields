@@ -38,3 +38,5 @@ class MyModel(models.Model):
 
     zero_field = EnumIntegerField(ZeroEnum, null=True, default=None, blank=True)
     int_enum = EnumIntegerField(IntegerEnum, null=True, default=None, blank=True)
+
+    zero2 = EnumIntegerField(ZeroEnum, default=ZeroEnum.ZERO)
