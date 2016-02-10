@@ -16,6 +16,14 @@ def test_field_value():
     m = MyModel.objects.filter(color=MyModel.Color.RED)[0]
     assert m.color == MyModel.Color.RED
 
+    # Passing the value should work the same way as passing the enum
+    assert MyModel.Color.RED.value == 'r'
+    m = MyModel.objects.filter(color='r')[0]
+    assert m.color == MyModel.Color.RED
+
+    with pytest.raises(ValueError):
+        MyModel.objects.filter(color='xx')[0]
+
 
 @pytest.mark.django_db
 def test_db_value():
