@@ -1,5 +1,5 @@
 # -- encoding: UTF-8 --
-
+from django.db.models import BLANK_CHOICE_DASH
 from django.forms.models import modelform_factory
 import pytest
 from .models import MyModel
@@ -8,7 +8,7 @@ import six
 
 def get_form(**kwargs):
     instance = MyModel(color=MyModel.Color.RED)
-    FormClass = modelform_factory(MyModel, fields=("color", "zero2"))
+    FormClass = modelform_factory(MyModel, fields=("color", "zero2", "int_enum"))
     return FormClass(instance=instance, **kwargs)
 
 
@@ -26,4 +26,5 @@ def test_bound_form_with_instance():
 
 def test_choices():
     form = get_form()
-    assert form.base_fields["zero2"].choices == [(0, 'ZERO'), (1, 'ONE')]
+    assert form.base_fields["zero2"].choices == [(0, 'Zero'), (1, 'One')]
+    assert form.base_fields["int_enum"].choices == BLANK_CHOICE_DASH + [(0, 'foo'), (1, 'B')]

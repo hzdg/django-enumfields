@@ -8,6 +8,8 @@ import pytest
 import six
 from six import u
 
+from tests.models import MyModel
+
 
 class Color(Enum):
     __order__ = 'RED GREEN BLUE'
@@ -35,11 +37,13 @@ def test_custom_labels():
     # Custom label
     assert Color.RED.label == 'Reddish'
     assert six.text_type(Color.RED) == 'Reddish'
+    assert six.text_type(MyModel.IntegerEnum.A) == 'foo'
 
 def test_automatic_labels():
     # Automatic label
     assert Color.GREEN.label == 'Green'
     assert six.text_type(Color.GREEN) == 'Green'
+    assert six.text_type(MyModel.IntegerEnum.B) == 'B'
 
 def test_lazy_labels():
     # Lazy label
