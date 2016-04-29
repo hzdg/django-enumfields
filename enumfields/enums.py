@@ -42,3 +42,8 @@ class Enum(EnumMeta('Enum', (BaseEnum,), _EnumDict())):
         Show our label when Django uses the Enum for displaying in a view
         """
         return force_text(self.label)
+
+
+@python_2_unicode_compatible
+class IntEnum(int, Enum):
+    pass
