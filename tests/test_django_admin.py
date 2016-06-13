@@ -11,7 +11,7 @@ except ImportError:  # `get_user_model` only exists from Django 1.5 on.
 from django.core.urlresolvers import reverse
 from django.test import Client
 import pytest
-from enumfields import EnumIntegerField
+from enumfields import EnumField, EnumIntegerField
 from .models import MyModel
 
 
@@ -66,3 +66,21 @@ def test_django_admin_lookup_value_for_integer_enum_field():
     field = EnumIntegerField(MyModel.Taste)
 
     assert field.get_prep_value(str(MyModel.Taste.BITTER)) == 3, "get_prep_value should be able to convert from strings"
+
+
+def test_django_admin_lookup_value_for_enum_field_object_string():
+    field = EnumField(MyModel.Color)
+
+    assert field.get_prep_value(str(MyModel.Color.BLUE)) == 'b', "get_prep_value should be able to convert from valid object strings"
+
+
+def test_django_admin_lookup_value_for_enum_field_invalid_object_string():
+    field = EnumField(MyModel.Color)
+
+    assert field.get_prep_value('Color.INVALID') == 'Color.INVALID', "get_prep_value should be able to deal with invalid object strings"
+
+
+def test_django_admin_lookup_value_for_enum_field_simple_string():
+    field = EnumField(MyModel.Color)
+
+    assert field.get_prep_value(str(MyModel.Color.BLUE.value)) == 'b', "get_prep_value should be able to deal with simple strings"
