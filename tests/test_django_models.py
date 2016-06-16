@@ -89,3 +89,15 @@ def test_serialization():
     fields = ser.getvalue()[0]["fields"]
     assert fields["color"] == m.color.value
     assert fields["taste"] == m.taste.value
+
+
+@pytest.mark.django_db
+def test_nonunique_label():
+    obj = MyModel.objects.create(
+        color=MyModel.Color.BLUE,
+        labeled_enum=MyModel.LabeledEnum.FOOBAR
+    )
+    assert obj.labeled_enum is MyModel.LabeledEnum.FOOBAR
+
+    obj = MyModel.objects.get(pk=obj.pk)
+    assert obj.labeled_enum is MyModel.LabeledEnum.FOOBAR
