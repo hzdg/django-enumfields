@@ -34,7 +34,11 @@ class EnumFieldMixin(six.with_metaclass(metaclass)):
         raise ValidationError('%s is not a valid value for enum %s' % (value, self.enum), code="invalid_enum_value")
 
     def get_prep_value(self, value):
-        return None if value is None else self.enum(value).value
+        if value is None:
+            return None
+        if isinstance(value, self.enum):  # Already the correct type -- fast path
+            return value.value
+        return self.enum(value).value
 
     def from_db_value(self, value, expression, connection, context):
         return self.to_python(value)
