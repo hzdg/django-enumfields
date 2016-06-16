@@ -1,7 +1,6 @@
 from django.db import models
-from enum import Enum, IntEnum
 
-from enumfields import EnumField, EnumIntegerField
+from enumfields import Enum, IntEnum, EnumField, EnumIntegerField
 
 
 class MyModel(models.Model):
@@ -26,6 +25,8 @@ class MyModel(models.Model):
     class IntegerEnum(IntEnum):
         A = 0
         B = 1
+        class Labels:
+            A = 'foo'
 
     taste = EnumField(Taste, default=Taste.SWEET)
     taste_null_default = EnumField(Taste, null=True, blank=True, default=None)

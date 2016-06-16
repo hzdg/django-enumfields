@@ -1,2 +1,2 @@
-from .enums import Enum
+from .enums import Enum, IntEnum
 from .fields import EnumField, EnumIntegerField
