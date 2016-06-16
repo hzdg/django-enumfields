@@ -9,7 +9,9 @@ from django.db.models.fields import NOT_PROVIDED, BLANK_CHOICE_DASH
 
 from .compat import import_string
 
-class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
+metaclass = models.SubfieldBase if django.VERSION < (1, 8) else type
+
+class EnumFieldMixin(six.with_metaclass(metaclass)):
     def __init__(self, enum, **options):
         if isinstance(enum, six.string_types):
             self.enum = import_string(enum)
@@ -32,7 +34,10 @@ class EnumFieldMixin(six.with_metaclass(models.SubfieldBase)):
         raise ValidationError('%s is not a valid value for enum %s' % (value, self.enum), code="invalid_enum_value")
 
     def get_prep_value(self, value):
-        return None if value is None else value.value
+        return None if value is None else self.enum(value).value
+
+    def from_db_value(self, value, expression, connection, context):
+        return self.to_python(value)
 
     def value_to_string(self, obj):
         """
