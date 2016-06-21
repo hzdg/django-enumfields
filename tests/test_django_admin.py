@@ -1,11 +1,12 @@
 # -- encoding: UTF-8 --
-
+import re
 import uuid
 
 try:
     from django.contrib.auth import get_user_model
 except ImportError:  # `get_user_model` only exists from Django 1.5 on.
     from django.contrib.auth.models import User
+
     get_user_model = lambda: User
 
 from django.core.urlresolvers import reverse
@@ -41,7 +42,7 @@ def superuser_client(client, superuser):
 
 @pytest.mark.django_db
 @pytest.mark.urls('tests.urls')
-def test_model_admin(superuser_client):
+def test_model_admin_post(superuser_client):
     url = reverse("admin:tests_mymodel_add")
     secret_uuid = str(uuid.uuid4())
     post_data = {
@@ -64,6 +65,41 @@ def test_model_admin(superuser_client):
     assert inst.color == MyModel.Color.RED, "Redness not assured"
     assert inst.taste == MyModel.Taste.UMAMI, "Umami not there"
     assert inst.taste_int == MyModel.Taste.SWEET, "Not sweet enough"
+
+
+@pytest.mark.django_db
+@pytest.mark.urls('tests.urls')
+@pytest.mark.parametrize('q_color', (None, MyModel.Color.BLUE, MyModel.Color.RED))
+@pytest.mark.parametrize('q_taste', (None, MyModel.Taste.SWEET, MyModel.Taste.SOUR))
+@pytest.mark.parametrize('q_int_enum', (None, MyModel.IntegerEnum.A, MyModel.IntegerEnum.B))
+def test_model_admin_filter(superuser_client, q_color, q_taste, q_int_enum):
+    """
+    Test that various combinations of Enum filters seem to do the right thing in the change list.
+    """
+
+    # Create a bunch of objects...
+    MyModel.objects.create(color=MyModel.Color.RED)
+    for taste in MyModel.Taste:
+        MyModel.objects.create(color=MyModel.Color.BLUE, taste=taste)
+    MyModel.objects.create(color=MyModel.Color.BLUE, taste=MyModel.Taste.UMAMI, int_enum=MyModel.IntegerEnum.A)
+    MyModel.objects.create(color=MyModel.Color.GREEN, int_enum=MyModel.IntegerEnum.B)
+
+    # Build a Django lookup...
+    lookup = dict((k, v) for (k, v) in {
+        'color': q_color,
+        'taste': q_taste,
+        'int_enum': q_int_enum,
+    }.items() if v is not None)
+    # Build the query string (this is assuming things, sort of)
+    qs = dict(('%s__exact' % k, v.value) for (k, v) in lookup.items())
+    # Run the request!
+    response = superuser_client.get(reverse('admin:tests_mymodel_changelist'), data=qs)
+    response.render()
+
+    # Look for the paginator line that lists how many results we found...
+    count = int(re.search('(\d+) my model', response.content.decode('utf8')).group(1))
+    # and compare it to what we expect.
+    assert count == MyModel.objects.filter(**lookup).count()
 
 
 def test_django_admin_lookup_value_for_integer_enum_field():

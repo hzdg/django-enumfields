@@ -2,10 +2,18 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib import admin
+
+from enumfields.admin import EnumFieldListFilter
 from .models import MyModel
-from django.contrib.admin.sites import AdminSite, site
+
 
 class MyModelAdmin(admin.ModelAdmin):
     model = MyModel
+    list_filter = [
+        ('color', EnumFieldListFilter),
+        ('taste', EnumFieldListFilter),
+        ('int_enum', EnumFieldListFilter),
+    ]
 
-site.register(MyModel, MyModelAdmin)
+
+admin.site.register(MyModel, MyModelAdmin)
