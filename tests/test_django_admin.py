@@ -26,8 +26,11 @@ SUPERUSER_PASS = "superpass"
 
 @pytest.fixture
 def superuser():
-    return get_user_model().objects.create_superuser(username=SUPERUSER_USERNAME, password=SUPERUSER_PASS,
-                                                     email="billgates@microsoft.com")
+    return get_user_model().objects.create_superuser(
+        username=SUPERUSER_USERNAME,
+        password=SUPERUSER_PASS,
+        email="billgates@microsoft.com"
+    )
 
 
 @pytest.fixture

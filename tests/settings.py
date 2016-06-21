@@ -23,6 +23,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
 )
 
+# Speed up tests by using a deliberately weak hasher instead of pbkdf/bcrypt:
+PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
+
 DEBUG = True
 
 STATIC_URL = "/static/"
