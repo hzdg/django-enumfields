@@ -62,7 +62,7 @@ names. You can provide custom labels with a nested "Labels" class.
             BLUE = 'b'
 
             class Labels:
-            	RED = 'A custom label'
+                RED = 'A custom label'
 
         color = EnumField(Color, max_length=1)
 
