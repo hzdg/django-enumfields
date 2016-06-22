@@ -2,12 +2,13 @@
 from django.db.models import BLANK_CHOICE_DASH
 from django.forms.models import modelform_factory
 import pytest
+from .enums import Color
 from .models import MyModel
 import six
 
 
 def get_form(**kwargs):
-    instance = MyModel(color=MyModel.Color.RED)
+    instance = MyModel(color=Color.RED)
     FormClass = modelform_factory(MyModel, fields=("color", "zero2", "int_enum"))
     return FormClass(instance=instance, **kwargs)
 

@@ -1,44 +1,11 @@
 from django.db import models
 
-from enumfields import Enum, IntEnum, EnumField, EnumIntegerField
+from enumfields import EnumField, EnumIntegerField
+from .enums import Color, Taste, IntegerEnum, LabeledEnum, ZeroEnum
 
 
 class MyModel(models.Model):
-    class Color(Enum):
-        RED = 'r'
-        GREEN = 'g'
-        BLUE = 'b'
-
     color = EnumField(Color, max_length=1)
-
-    class Taste(Enum):
-        SWEET = 1
-        SOUR = 2
-        BITTER = 3
-        SALTY = 4
-        UMAMI = 5
-
-    class ZeroEnum(Enum):
-        ZERO = 0
-        ONE = 1
-
-    class IntegerEnum(IntEnum):
-        A = 0
-        B = 1
-        class Labels:
-            A = 'foo'
-
-    class LabeledEnum(Enum):
-        FOO = 'foo'
-        BAR = 'bar'
-        FOOBAR = 'foobar'
-
-        class Labels:
-            FOO = 'Foo'
-            BAR = 'Bar'
-            # this is intentional. see test_nonunique_label
-            FOOBAR = 'Foo'
-
     taste = EnumField(Taste, default=Taste.SWEET)
     taste_null_default = EnumField(Taste, null=True, blank=True, default=None)
     taste_int = EnumIntegerField(Taste, default=Taste.SWEET)
