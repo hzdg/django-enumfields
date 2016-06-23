@@ -33,7 +33,7 @@ except ImportError:
 
 setup(
     name='django-enumfields',
-    version='0.7.4',
+    version='0.8.0',
     author='HZDG',
     author_email='webmaster@hzdg.com',
     description='Real Python Enums for Django.',
