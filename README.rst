@@ -22,12 +22,12 @@ EnumField, EnumIntegerField
     from enumfields import EnumField
     from enumfields import Enum  # Uses Ethan Furman's "enum34" backport
 
-    class MyModel(models.Model):
+    class Color(Enum):
+        RED = 'r'
+        GREEN = 'g'
+        BLUE = 'b'
 
-        class Color(Enum):
-            RED = 'r'
-            GREEN = 'g'
-            BLUE = 'b'
+    class MyModel(models.Model):
 
         color = EnumField(Color, max_length=1)
 
@@ -35,7 +35,7 @@ Elsewhere:
 
 .. code-block:: python
 
-    m = MyModel.objects.filter(color=MyModel.Color.RED)
+    m = MyModel.objects.filter(color=Color.RED)
 
 ``EnumIntegerField`` works identically, but the underlying storage mechanism is
 an ``IntegerField`` instead of a ``CharField``.
@@ -54,20 +54,19 @@ names. You can provide custom labels with a nested "Labels" class.
 
     from enumfields import EnumField, Enum  # Our own Enum class
 
+    class Color(Enum):
+        RED = 'r'
+        GREEN = 'g'
+        BLUE = 'b'
+
+        class Labels:
+            RED = 'A custom label'
+
     class MyModel(models.Model):
-
-        class Color(Enum):
-            RED = 'r'
-            GREEN = 'g'
-            BLUE = 'b'
-
-            class Labels:
-                RED = 'A custom label'
-
         color = EnumField(Color, max_length=1)
 
-    assert MyModel.Color.GREEN.label == 'Green'
-    assert MyModel.Color.RED.label == 'A custom label'
+    assert Color.GREEN.label == 'Green'
+    assert Color.RED.label == 'A custom label'
 
 
 .. _PEP435: http://www.python.org/dev/peps/pep-0435/

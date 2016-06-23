@@ -13,6 +13,7 @@ from django.core.urlresolvers import reverse
 from django.test import Client
 import pytest
 from enumfields import EnumIntegerField
+from .enums import Color, Taste, ZeroEnum, IntegerEnum
 from .models import MyModel
 
 
@@ -46,11 +47,11 @@ def test_model_admin_post(superuser_client):
     url = reverse("admin:tests_mymodel_add")
     secret_uuid = str(uuid.uuid4())
     post_data = {
-        'color': MyModel.Color.RED.value,
-        'taste': MyModel.Taste.UMAMI.value,
-        'taste_int': MyModel.Taste.SWEET.value,
+        'color': Color.RED.value,
+        'taste': Taste.UMAMI.value,
+        'taste_int': Taste.SWEET.value,
         'random_code': secret_uuid,
-        'zero2': MyModel.ZeroEnum.ZERO.value,
+        'zero2': ZeroEnum.ZERO.value,
     }
     response = superuser_client.post(url, follow=True, data=post_data)
     response.render()
@@ -60,29 +61,29 @@ def test_model_admin_post(superuser_client):
     assert b"Select a valid choice" not in text
     try:
         inst = MyModel.objects.get(random_code=secret_uuid)
-    except MyModel.DoesNotExist:
+    except DoesNotExist:
         assert False, "Object wasn't created in the database"
-    assert inst.color == MyModel.Color.RED, "Redness not assured"
-    assert inst.taste == MyModel.Taste.UMAMI, "Umami not there"
-    assert inst.taste_int == MyModel.Taste.SWEET, "Not sweet enough"
+    assert inst.color == Color.RED, "Redness not assured"
+    assert inst.taste == Taste.UMAMI, "Umami not there"
+    assert inst.taste_int == Taste.SWEET, "Not sweet enough"
 
 
 @pytest.mark.django_db
 @pytest.mark.urls('tests.urls')
-@pytest.mark.parametrize('q_color', (None, MyModel.Color.BLUE, MyModel.Color.RED))
-@pytest.mark.parametrize('q_taste', (None, MyModel.Taste.SWEET, MyModel.Taste.SOUR))
-@pytest.mark.parametrize('q_int_enum', (None, MyModel.IntegerEnum.A, MyModel.IntegerEnum.B))
+@pytest.mark.parametrize('q_color', (None, Color.BLUE, Color.RED))
+@pytest.mark.parametrize('q_taste', (None, Taste.SWEET, Taste.SOUR))
+@pytest.mark.parametrize('q_int_enum', (None, IntegerEnum.A, IntegerEnum.B))
 def test_model_admin_filter(superuser_client, q_color, q_taste, q_int_enum):
     """
     Test that various combinations of Enum filters seem to do the right thing in the change list.
     """
 
     # Create a bunch of objects...
-    MyModel.objects.create(color=MyModel.Color.RED)
-    for taste in MyModel.Taste:
-        MyModel.objects.create(color=MyModel.Color.BLUE, taste=taste)
-    MyModel.objects.create(color=MyModel.Color.BLUE, taste=MyModel.Taste.UMAMI, int_enum=MyModel.IntegerEnum.A)
-    MyModel.objects.create(color=MyModel.Color.GREEN, int_enum=MyModel.IntegerEnum.B)
+    MyModel.objects.create(color=Color.RED)
+    for taste in Taste:
+        MyModel.objects.create(color=Color.BLUE, taste=taste)
+    MyModel.objects.create(color=Color.BLUE, taste=Taste.UMAMI, int_enum=IntegerEnum.A)
+    MyModel.objects.create(color=Color.GREEN, int_enum=IntegerEnum.B)
 
     # Build a Django lookup...
     lookup = dict((k, v) for (k, v) in {
@@ -103,6 +104,6 @@ def test_model_admin_filter(superuser_client, q_color, q_taste, q_int_enum):
 
 
 def test_django_admin_lookup_value_for_integer_enum_field():
-    field = EnumIntegerField(MyModel.Taste)
+    field = EnumIntegerField(Taste)
 
-    assert field.get_prep_value(str(MyModel.Taste.BITTER)) == 3, "get_prep_value should be able to convert from strings"
+    assert field.get_prep_value(str(Taste.BITTER)) == 3, "get_prep_value should be able to convert from strings"

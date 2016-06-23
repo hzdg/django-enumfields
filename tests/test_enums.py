@@ -1,33 +1,19 @@
 # -- encoding: UTF-8 --
+from __future__ import unicode_literals
 from django.core.exceptions import ValidationError
 
 from django.forms import BaseForm
-from django.utils.translation import ugettext_lazy
-from enumfields import Enum, EnumField
+from enumfields import EnumField
 import pytest
 import six
-from six import u
 
-from tests.models import MyModel
-
-
-class Color(Enum):
-    __order__ = 'RED GREEN BLUE'
-
-    RED = 'r'
-    GREEN = 'g'
-    BLUE = 'b'
-
-    class Labels:
-        RED = 'Reddish'
-        BLUE = ugettext_lazy(u('bluë'))
-
+from .enums import Color, IntegerEnum
 
 def test_choice_ordering():
     EXPECTED_CHOICES = (
         ('r', 'Reddish'),
         ('g', 'Green'),
-        ('b', u('bluë')),
+        ('b', 'bluë'),
     )
     for ((ex_key, ex_val), (key, val)) in zip(EXPECTED_CHOICES, Color.choices()):
         assert key == ex_key
@@ -37,18 +23,18 @@ def test_custom_labels():
     # Custom label
     assert Color.RED.label == 'Reddish'
     assert six.text_type(Color.RED) == 'Reddish'
-    assert six.text_type(MyModel.IntegerEnum.A) == 'foo'
+    assert six.text_type(IntegerEnum.A) == 'foo'
 
 def test_automatic_labels():
     # Automatic label
     assert Color.GREEN.label == 'Green'
     assert six.text_type(Color.GREEN) == 'Green'
-    assert six.text_type(MyModel.IntegerEnum.B) == 'B'
+    assert six.text_type(IntegerEnum.B) == 'B'
 
 def test_lazy_labels():
     # Lazy label
     assert isinstance(six.text_type(Color.BLUE), six.string_types)
-    assert six.text_type(Color.BLUE) == u('bluë')
+    assert six.text_type(Color.BLUE) == 'bluë'
 
 def test_formfield_labels():
     # Formfield choice label
@@ -59,7 +45,7 @@ def test_formfield_labels():
             assert text == expectations[value]
 
 def test_formfield_functionality():
-    form_cls = type("FauxForm", (BaseForm,), {
+    form_cls = type(str("FauxForm"), (BaseForm,), {
         "base_fields": {"color": EnumField(Color).formfield()}
     })
     form = form_cls(data={"color": "r"})
