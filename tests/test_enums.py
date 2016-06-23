@@ -9,6 +9,7 @@ import six
 
 from .enums import Color, IntegerEnum
 
+
 def test_choice_ordering():
     EXPECTED_CHOICES = (
         ('r', 'Reddish'),
@@ -19,11 +20,13 @@ def test_choice_ordering():
         assert key == ex_key
         assert six.text_type(val) == six.text_type(ex_val)
 
+
 def test_custom_labels():
     # Custom label
     assert Color.RED.label == 'Reddish'
     assert six.text_type(Color.RED) == 'Reddish'
     assert six.text_type(IntegerEnum.A) == 'foo'
+
 
 def test_automatic_labels():
     # Automatic label
@@ -31,10 +34,12 @@ def test_automatic_labels():
     assert six.text_type(Color.GREEN) == 'Green'
     assert six.text_type(IntegerEnum.B) == 'B'
 
+
 def test_lazy_labels():
     # Lazy label
     assert isinstance(six.text_type(Color.BLUE), six.string_types)
     assert six.text_type(Color.BLUE) == 'bluë'
+
 
 def test_formfield_labels():
     # Formfield choice label
@@ -44,6 +49,7 @@ def test_formfield_labels():
         if value:
             assert text == expectations[value]
 
+
 def test_formfield_functionality():
     form_cls = type(str("FauxForm"), (BaseForm,), {
         "base_fields": {"color": EnumField(Color).formfield()}
@@ -52,10 +58,12 @@ def test_formfield_functionality():
     assert not form.errors
     assert form.cleaned_data["color"] == Color.RED
 
+
 def test_invalid_to_python_fails():
     with pytest.raises(ValidationError) as ve:
         EnumField(Color).to_python("invalid")
     assert ve.value.code == "invalid_enum_value"
+
 
 def test_import_by_string():
     assert EnumField("tests.test_enums.Color").enum == Color

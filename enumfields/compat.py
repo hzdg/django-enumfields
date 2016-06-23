@@ -11,6 +11,7 @@ __all__ = ["formfield"]
 # would make this compatible with our enums,
 # but it's best to go all the way to the freshest code, I think.
 
+
 def formfield(db_field, form_class=None, choices_form_class=None, **kwargs):
     """
     Returns a django.forms.Field instance for this database Field.
@@ -59,8 +60,8 @@ try:
         from django.utils.module_loading import import_by_path as import_string
 except ImportError:
     from django.utils.importlib import import_module
+
     def import_string(dotted_path):
         module_path, class_name = dotted_path.rsplit('.', 1)
         module = import_module(module_path)
         return getattr(module, class_name)
-

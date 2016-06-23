@@ -11,6 +11,7 @@ from .compat import import_string
 
 metaclass = models.SubfieldBase if django.VERSION < (1, 8) else type
 
+
 class EnumFieldMixin(six.with_metaclass(metaclass)):
     def __init__(self, enum, **options):
         if isinstance(enum, six.string_types):
@@ -144,7 +145,6 @@ def enum_value(an_enum):
         return an_enum.value
 
     raise ValueError("%s is not a enum" % an_enum)
-
 
 
 rules = [

@@ -5,6 +5,7 @@ from django.utils.encoding import force_text
 
 __all__ = ["EnumChoiceField", "EnumMultipleChoiceField"]
 
+
 class EnumChoiceFieldMixin(object):
     def prepare_value(self, value):
         # Widgets expect to get strings as values.
@@ -24,6 +25,7 @@ class EnumChoiceFieldMixin(object):
 
 class EnumChoiceField(EnumChoiceFieldMixin, TypedChoiceField):
     pass
+
 
 class EnumMultipleChoiceField(EnumChoiceFieldMixin, TypedMultipleChoiceField):
     pass
