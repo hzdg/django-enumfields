@@ -4,49 +4,16 @@ import uuid
 
 import pytest
 from django.core.urlresolvers import reverse
-from django.test import Client
 
 from enumfields import EnumIntegerField
 
 from .enums import Color, IntegerEnum, Taste, ZeroEnum
 from .models import MyModel
 
-try:
-    from django.contrib.auth import get_user_model
-except ImportError:  # `get_user_model` only exists from Django 1.5 on.
-    from django.contrib.auth.models import User
-
-    get_user_model = lambda: User
-
-
-
-@pytest.fixture
-def client():
-    return Client()
-
-
-SUPERUSER_USERNAME = "superuser"
-SUPERUSER_PASS = "superpass"
-
-
-@pytest.fixture
-def superuser():
-    return get_user_model().objects.create_superuser(
-        username=SUPERUSER_USERNAME,
-        password=SUPERUSER_PASS,
-        email="billgates@microsoft.com"
-    )
-
-
-@pytest.fixture
-def superuser_client(client, superuser):
-    client.login(username=SUPERUSER_USERNAME, password=SUPERUSER_PASS)
-    return client
-
 
 @pytest.mark.django_db
 @pytest.mark.urls('tests.urls')
-def test_model_admin_post(superuser_client):
+def test_model_admin_post(admin_client):
     url = reverse("admin:tests_mymodel_add")
     secret_uuid = str(uuid.uuid4())
     post_data = {
@@ -56,7 +23,7 @@ def test_model_admin_post(superuser_client):
         'random_code': secret_uuid,
         'zero2': ZeroEnum.ZERO.value,
     }
-    response = superuser_client.post(url, follow=True, data=post_data)
+    response = admin_client.post(url, follow=True, data=post_data)
     response.render()
     text = response.content
 
@@ -76,7 +43,7 @@ def test_model_admin_post(superuser_client):
 @pytest.mark.parametrize('q_color', (None, Color.BLUE, Color.RED))
 @pytest.mark.parametrize('q_taste', (None, Taste.SWEET, Taste.SOUR))
 @pytest.mark.parametrize('q_int_enum', (None, IntegerEnum.A, IntegerEnum.B))
-def test_model_admin_filter(superuser_client, q_color, q_taste, q_int_enum):
+def test_model_admin_filter(admin_client, q_color, q_taste, q_int_enum):
     """
     Test that various combinations of Enum filters seem to do the right thing in the change list.
     """
@@ -97,7 +64,7 @@ def test_model_admin_filter(superuser_client, q_color, q_taste, q_int_enum):
     # Build the query string (this is assuming things, sort of)
     qs = dict(('%s__exact' % k, v.value) for (k, v) in lookup.items())
     # Run the request!
-    response = superuser_client.get(reverse('admin:tests_mymodel_changelist'), data=qs)
+    response = admin_client.get(reverse('admin:tests_mymodel_changelist'), data=qs)
     response.render()
 
     # Look for the paginator line that lists how many results we found...
