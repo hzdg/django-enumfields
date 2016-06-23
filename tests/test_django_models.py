@@ -1,8 +1,9 @@
 # -- encoding: UTF-8 --
 
+from enum import IntEnum
+
 import pytest
 from django.db import connection
-from enum import IntEnum
 
 from .enums import Color, IntegerEnum, LabeledEnum, Taste, ZeroEnum
 from .models import MyModel

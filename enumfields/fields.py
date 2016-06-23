@@ -1,15 +1,17 @@
+from enum import Enum
+
 import django
+import six
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.fields import BLANK_CHOICE_DASH, NOT_PROVIDED
 from django.utils.functional import cached_property
-from enum import Enum
-from .forms import EnumChoiceField
-import six
-from django.db.models.fields import NOT_PROVIDED, BLANK_CHOICE_DASH
 
 from .compat import import_string
+from .forms import EnumChoiceField
 
 metaclass = models.SubfieldBase if django.VERSION < (1, 8) else type
+
 
 class EnumFieldMixin(six.with_metaclass(metaclass)):
     def __init__(self, enum, **options):
@@ -144,7 +146,6 @@ def enum_value(an_enum):
         return an_enum.value
 
     raise ValueError("%s is not a enum" % an_enum)
-
 
 
 rules = [

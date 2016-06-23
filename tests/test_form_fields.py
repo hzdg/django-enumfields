@@ -1,10 +1,11 @@
 # -- encoding: UTF-8 --
+import pytest
+import six
 from django.db.models import BLANK_CHOICE_DASH
 from django.forms.models import modelform_factory
-import pytest
+
 from .enums import Color
 from .models import MyModel
-import six
 
 
 def get_form(**kwargs):
