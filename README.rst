@@ -62,7 +62,7 @@ names. You can provide custom labels with a nested "Labels" class.
             BLUE = 'b'
 
             class Labels:
-            	RED = 'A custom label'
+                RED = 'A custom label'
 
         color = EnumField(Color, max_length=1)
 
@@ -71,3 +71,18 @@ names. You can provide custom labels with a nested "Labels" class.
 
 
 .. _PEP435: http://www.python.org/dev/peps/pep-0435/
+
+
+EnumFieldListFilter
+```````````````````
+
+``enumfields.admin.EnumFieldListFilter`` is provided to allow using enums in
+``list_filter``.
+
+
+.. code-block:: python
+
+    from enumfields.admin import EnumFieldListFilter
+
+    class MyModelAdmin(admin.ModelAdmin):
+      list_filter = [('color', EnumFieldListFilter)]
