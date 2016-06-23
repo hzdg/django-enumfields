@@ -1,7 +1,8 @@
 from django.db import models
 
 from enumfields import EnumField, EnumIntegerField
-from .enums import Color, Taste, IntegerEnum, LabeledEnum, ZeroEnum
+
+from .enums import Color, IntegerEnum, LabeledEnum, Taste, ZeroEnum
 
 
 class MyModel(models.Model):

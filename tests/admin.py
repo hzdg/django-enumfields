@@ -4,6 +4,7 @@
 from django.contrib import admin
 
 from enumfields.admin import EnumFieldListFilter
+
 from .models import MyModel
 
 

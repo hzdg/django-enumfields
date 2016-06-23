@@ -2,6 +2,15 @@
 import re
 import uuid
 
+import pytest
+from django.core.urlresolvers import reverse
+from django.test import Client
+
+from enumfields import EnumIntegerField
+
+from .enums import Color, IntegerEnum, Taste, ZeroEnum
+from .models import MyModel
+
 try:
     from django.contrib.auth import get_user_model
 except ImportError:  # `get_user_model` only exists from Django 1.5 on.
@@ -9,12 +18,6 @@ except ImportError:  # `get_user_model` only exists from Django 1.5 on.
 
     get_user_model = lambda: User
 
-from django.core.urlresolvers import reverse
-from django.test import Client
-import pytest
-from enumfields import EnumIntegerField
-from .enums import Color, Taste, ZeroEnum, IntegerEnum
-from .models import MyModel
 
 
 @pytest.fixture

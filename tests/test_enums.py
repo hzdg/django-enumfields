@@ -1,11 +1,12 @@
 # -- encoding: UTF-8 --
 from __future__ import unicode_literals
-from django.core.exceptions import ValidationError
 
-from django.forms import BaseForm
-from enumfields import EnumField
 import pytest
 import six
+from django.core.exceptions import ValidationError
+from django.forms import BaseForm
+
+from enumfields import EnumField
 
 from .enums import Color, IntegerEnum
 

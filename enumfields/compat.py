@@ -1,5 +1,5 @@
 # -- encoding: UTF-8 --
-from django.forms import TypedChoiceField, CharField
+from django.forms import CharField, TypedChoiceField
 from django.utils.text import capfirst
 
 __all__ = ["formfield"]

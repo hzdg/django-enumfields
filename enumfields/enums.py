@@ -1,6 +1,9 @@
 import inspect
+from enum import Enum as BaseEnum
+from enum import EnumMeta as BaseEnumMeta
+from enum import _EnumDict
+
 from django.utils.encoding import python_2_unicode_compatible
-from enum import Enum as BaseEnum, EnumMeta as BaseEnumMeta, _EnumDict
 
 try:
     from django.utils.encoding import force_text
