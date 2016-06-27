@@ -10,10 +10,28 @@ from django.utils.functional import cached_property
 from .compat import import_string
 from .forms import EnumChoiceField
 
-metaclass = models.SubfieldBase if django.VERSION < (1, 8) else type
+
+class CastOnAssignDescriptor(object):
+    """
+    A property descriptor which ensures that `field.to_python()` is called on _every_ assignment to the field.
+
+    This used to be provided by the `django.db.models.subclassing.Creator` class, which in turn
+    was used by the deprecated-in-Django-1.10 `SubfieldBase` class, hence the reimplementation here.
+    """
+
+    def __init__(self, field):
+        self.field = field
+
+    def __get__(self, obj, type=None):
+        if obj is None:
+            return self
+        return obj.__dict__[self.field.name]
+
+    def __set__(self, obj, value):
+        obj.__dict__[self.field.name] = self.field.to_python(value)
 
 
-class EnumFieldMixin(six.with_metaclass(metaclass)):
+class EnumFieldMixin(object):
     def __init__(self, enum, **options):
         if isinstance(enum, six.string_types):
             self.enum = import_string(enum)
@@ -24,6 +42,10 @@ class EnumFieldMixin(six.with_metaclass(metaclass)):
             options["choices"] = [(i, getattr(i, 'label', i.name)) for i in self.enum]  # choices for the TypedChoiceField
 
         super(EnumFieldMixin, self).__init__(**options)
+
+    def contribute_to_class(self, cls, name):
+        super(EnumFieldMixin, self).contribute_to_class(cls, name)
+        setattr(cls, name, CastOnAssignDescriptor(self))
 
     def to_python(self, value):
         if value is None or value == '':
