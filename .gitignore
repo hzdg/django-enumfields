@@ -2,6 +2,7 @@
 *.egg
 .DS_Store
 /.env
+/build
 /dist
 /MANIFEST
 /venv*
