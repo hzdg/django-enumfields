@@ -41,6 +41,17 @@ Elsewhere:
 an ``IntegerField`` instead of a ``CharField``.
 
 
+Usage in Forms
+~~~~~~~~~~~~~~
+
+Call the ``formfield`` method to use an ``EnumField`` directly in a ``Form``.
+
+.. code-block:: python
+
+    class MyForm(forms.Form):
+
+        color = EnumField(Color, max_length=1).formfield()
+
 Enum
 ````
 
