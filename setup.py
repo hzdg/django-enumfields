@@ -52,7 +52,7 @@ setup(
     ],
     install_requires=install_requires,
     tests_require=[
-        'pytest-django',
+        'pytest-django<3.0',
         'Django',
     ],
     cmdclass={'test': PyTest},
