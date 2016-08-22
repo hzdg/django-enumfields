@@ -1,4 +1,5 @@
 from enum import Enum
+import collections
 
 import django
 import six
@@ -7,7 +8,7 @@ from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH, NOT_PROVIDED
 from django.utils.functional import cached_property
 
-from .compat import import_string
+from .compat import import_string, import_class
 from .forms import EnumChoiceField
 
 
@@ -35,12 +36,22 @@ class EnumFieldMixin(object):
     def __init__(self, enum, **options):
         if isinstance(enum, six.string_types):
             self.enum = import_string(enum)
+        elif isinstance(enum, collections.Sequence):
+            self.enum = import_class(enum)
         else:
             self.enum = enum
 
-        if "choices" not in options:
-            options["choices"] = [(i, getattr(i, 'label', i.name)) for i in self.enum]  # choices for the TypedChoiceField
-
+        # This allows unneeded choices to be hidden from Admin page
+        include_enums = options.pop('include', None)
+        exclude_enums = options.pop('exclude', None)
+        if 'choices' not in options:
+            all_enums = (e for e in self.enum)
+            include_enums = include_enums or all_enums
+            exclude_enums = exclude_enums or ()
+            # choices for the TypedChoiceField
+            options['choices'] = tuple(
+                (e, getattr(e, 'label', e.name))
+                for e in include_enums if e not in exclude_enums)
         super(EnumFieldMixin, self).__init__(**options)
 
     def contribute_to_class(self, cls, name):
@@ -92,8 +103,11 @@ class EnumFieldMixin(object):
         return super(EnumFieldMixin, self).get_default()
 
     def deconstruct(self):
+        from qualname import qualname
+
         name, path, args, kwargs = super(EnumFieldMixin, self).deconstruct()
-        kwargs['enum'] = self.enum
+
+        kwargs['enum'] = (self.enum.__module__, qualname(self.enum))
         kwargs.pop('choices', None)
         if 'default' in kwargs:
             if hasattr(kwargs["default"], "value"):

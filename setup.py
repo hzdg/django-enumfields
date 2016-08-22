@@ -25,7 +25,7 @@ class PyTest(TestCommand):
         errno = pytest.main(self.test_args)
         sys.exit(errno)
 
-install_requires = ['six']
+install_requires = ['six', 'qualname']
 try:
     import enum
 except ImportError:
