@@ -49,3 +49,10 @@ class LabeledEnum(Enum):
         BAR = 'Bar'
         # this is intentional. see test_nonunique_label
         FOOBAR = 'Foo'
+
+
+class Zoo(object):
+    class Animal(Enum):
+        CAT = 0
+        DOG = 1
+        DINOSAUR = 2

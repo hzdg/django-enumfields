@@ -54,6 +54,7 @@ setup(
     tests_require=[
         'pytest-django',
         'Django',
+        'djangorestframework'
     ],
     cmdclass={'test': PyTest},
 )

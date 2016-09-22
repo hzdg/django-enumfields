@@ -2,7 +2,7 @@ from django.db import models
 
 from enumfields import EnumField, EnumIntegerField
 
-from .enums import Color, IntegerEnum, LabeledEnum, Taste, ZeroEnum
+from .enums import Color, IntegerEnum, LabeledEnum, Taste, ZeroEnum, Zoo
 
 
 class MyModel(models.Model):
@@ -21,3 +21,8 @@ class MyModel(models.Model):
 
     zero2 = EnumIntegerField(ZeroEnum, default=ZeroEnum.ZERO)
     labeled_enum = EnumField(LabeledEnum, blank=True, null=True)
+
+
+class RestrictedModel(models.Model):
+    animal = EnumField(Zoo.Animal, default=Zoo.Animal.CAT, exclude=(Zoo.Animal.DINOSAUR,))
+    random_code = models.TextField(null=True, blank=True)

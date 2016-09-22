@@ -8,7 +8,7 @@ from django.forms import BaseForm
 
 from enumfields import EnumField
 
-from .enums import Color, IntegerEnum
+from .enums import Color, IntegerEnum, Zoo
 
 
 def test_choice_ordering():
@@ -67,4 +67,8 @@ def test_invalid_to_python_fails():
 
 
 def test_import_by_string():
-    assert EnumField("tests.test_enums.Color").enum == Color
+    assert EnumField("tests.enums.Color").enum == Color
+
+
+def test_import_by_sequence():
+    assert EnumField(("tests.enums", "Zoo.Animal")).enum == Zoo.Animal

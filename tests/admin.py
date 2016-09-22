@@ -5,7 +5,7 @@ from django.contrib import admin
 
 from enumfields.admin import EnumFieldListFilter
 
-from .models import MyModel
+from .models import MyModel, RestrictedModel
 
 
 class MyModelAdmin(admin.ModelAdmin):
@@ -17,4 +17,9 @@ class MyModelAdmin(admin.ModelAdmin):
     ]
 
 
+class RestrictedModelAdmin(admin.ModelAdmin):
+    model = RestrictedModel
+
+
 admin.site.register(MyModel, MyModelAdmin)
+admin.site.register(RestrictedModel, RestrictedModelAdmin)

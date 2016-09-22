@@ -5,8 +5,11 @@ from enum import IntEnum
 import pytest
 from django.db import connection
 
+from enumfields.fields import EnumFieldMixin
+from enumfields.compat import import_string
+
 from .enums import Color, IntegerEnum, LabeledEnum, Taste, ZeroEnum
-from .models import MyModel
+from .models import MyModel, RestrictedModel
 
 
 @pytest.mark.django_db
@@ -103,3 +106,20 @@ def test_nonunique_label():
 
     obj = MyModel.objects.get(pk=obj.pk)
     assert obj.labeled_enum is LabeledEnum.FOOBAR
+
+
+def test_enum_deconstruct():
+    def check_field(field):
+        name, path, args, kwargs = field.deconstruct()
+        klass = import_string(path)
+        assert name == field.name
+        assert type(field) is klass
+        new_field = klass(*args, **kwargs)
+        assert field.enum == new_field.enum
+
+    def check_model(model):
+        [check_field(field) for field in model._meta.get_fields()
+         if isinstance(field, EnumFieldMixin)]
+
+    check_model(MyModel)
+    check_model(RestrictedModel)

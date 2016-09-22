@@ -7,8 +7,8 @@ from django.core.urlresolvers import reverse
 
 from enumfields import EnumIntegerField
 
-from .enums import Color, IntegerEnum, Taste, ZeroEnum
-from .models import MyModel
+from .enums import Color, IntegerEnum, Taste, ZeroEnum, Zoo
+from .models import MyModel, RestrictedModel
 
 
 @pytest.mark.django_db
@@ -36,6 +36,36 @@ def test_model_admin_post(admin_client):
     assert inst.color == Color.RED, "Redness not assured"
     assert inst.taste == Taste.UMAMI, "Umami not there"
     assert inst.taste_int == Taste.SWEET, "Not sweet enough"
+
+
+@pytest.mark.django_db
+@pytest.mark.urls('tests.urls')
+def test_model_admin_restricted_post(admin_client):
+    url = reverse("admin:tests_restrictedmodel_add")
+    secret_uuid = str(uuid.uuid4())
+    post_data = {
+        'animal': Zoo.Animal.DINOSAUR.value,
+        'random_code': secret_uuid,
+    }
+    response = admin_client.post(url, follow=True, data=post_data)
+    response.render()
+    text = response.content
+    assert b"Select a valid choice" in text, "You shouldn't raise Dinosaur"
+
+    post_data = {
+        'animal': Zoo.Animal.DOG.value,
+        'random_code': secret_uuid,
+    }
+    response = admin_client.post(url, follow=True, data=post_data)
+    response.render()
+    text = response.content
+    assert b"This field is required" not in text
+    assert b"Select a valid choice" not in text
+    try:
+        inst = RestrictedModel.objects.get(random_code=secret_uuid)
+    except DoesNotExist:
+        assert False, "Object wasn't created in the database"
+    assert inst.animal == Zoo.Animal.DOG, "Why not Dog?"
 
 
 @pytest.mark.django_db
