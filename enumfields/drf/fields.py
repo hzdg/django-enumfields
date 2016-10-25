@@ -9,7 +9,7 @@ class EnumField(ChoiceField):
         super(EnumField, self).__init__(**kwargs)
 
     def to_representation(self, instance):
-        if instance in ('', None):
+        if instance in ('', u'', None):
             return instance
         try:
             if not isinstance(instance, self.enum):
@@ -20,6 +20,8 @@ class EnumField(ChoiceField):
                 instance, self.enum.__name__))
 
     def to_internal_value(self, data):
+        if isinstance(data, self.enum):
+            return data
         # Let data goes through ChoiceField.to_internal_value first
         # So we don't need to handle int <-> str conversion (DRF behavior)
         cleaned_data = super(EnumField, self).to_internal_value(data)

@@ -3,13 +3,12 @@
 import uuid
 
 import pytest
-from django.db import connection
 from rest_framework import serializers
 
 from enumfields.drf.serializers import EnumSupportSerializerMixin
 
 from .models import MyModel
-from .enums import Color, IntegerEnum, LabeledEnum, Taste, ZeroEnum
+from .enums import Color, IntegerEnum, Taste
 
 
 class MySerializer(EnumSupportSerializerMixin, serializers.ModelSerializer):
