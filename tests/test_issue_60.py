@@ -1,8 +1,7 @@
 import pytest
 
-from .models import MyModel
-
 from .enums import Color
+from .models import MyModel
 
 
 @pytest.mark.django_db

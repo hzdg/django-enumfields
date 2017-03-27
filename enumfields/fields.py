@@ -1,10 +1,9 @@
 from enum import Enum
 
-import django
 import six
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.fields import BLANK_CHOICE_DASH, NOT_PROVIDED
+from django.db.models.fields import BLANK_CHOICE_DASH
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
 
@@ -39,7 +38,10 @@ class EnumFieldMixin(object):
             self.enum = enum
 
         if "choices" not in options:
-            options["choices"] = [(i, getattr(i, 'label', i.name)) for i in self.enum]  # choices for the TypedChoiceField
+            options["choices"] = [  # choices for the TypedChoiceField
+                (i, getattr(i, 'label', i.name))
+                for i in self.enum
+            ]
 
         super(EnumFieldMixin, self).__init__(**options)
 

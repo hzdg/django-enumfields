@@ -1,15 +1,13 @@
 import inspect
 
+from django.utils.encoding import force_text, python_2_unicode_compatible
+
 try:
     from enum import Enum as BaseEnum
     from enum import EnumMeta as BaseEnumMeta
     from enum import _EnumDict
 except ImportError:  # pragma: no cover
     raise ImportError('Missing the enum module. Please install enum34.')
-
-from django.utils.encoding import python_2_unicode_compatible
-
-from django.utils.encoding import force_text
 
 
 class EnumMeta(BaseEnumMeta):
