@@ -52,7 +52,6 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Topic :: Internet :: WWW/HTTP',
     ],
-    install_requires=['six'],
     tests_require=[
         'pytest-django',
         'Django',
