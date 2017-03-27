@@ -1,6 +1,6 @@
 # -- encoding: UTF-8 --
 import pytest
-import six
+from django.utils import six
 from django.db.models import BLANK_CHOICE_DASH
 from django.forms.models import modelform_factory
 

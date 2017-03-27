@@ -1,6 +1,6 @@
 from enum import Enum
 
-import six
+from django.utils import six
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
