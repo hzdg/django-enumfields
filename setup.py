@@ -56,6 +56,7 @@ setup(
     tests_require=[
         'pytest-django',
         'Django',
+        'djangorestframework'
     ],
     extras_require={
         ":python_version<'3.4'": ['enum34'],
