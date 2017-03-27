@@ -1,11 +1,7 @@
 import pytest
 
+from .enums import Color
 from .models import MyModel
-
-try:
-    from .enums import Color  # Use the new location of Color enum
-except ImportError:
-    Color = MyModel.Color  # Attempt the 0.7.4 location of color enum
 
 
 @pytest.mark.django_db

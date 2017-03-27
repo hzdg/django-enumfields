@@ -1,13 +1,12 @@
 from enum import Enum
 
-import django
 import six
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models.fields import BLANK_CHOICE_DASH, NOT_PROVIDED
+from django.db.models.fields import BLANK_CHOICE_DASH
 from django.utils.functional import cached_property
+from django.utils.module_loading import import_string
 
-from .compat import import_string
 from .forms import EnumChoiceField
 
 
@@ -39,7 +38,10 @@ class EnumFieldMixin(object):
             self.enum = enum
 
         if "choices" not in options:
-            options["choices"] = [(i, getattr(i, 'label', i.name)) for i in self.enum]  # choices for the TypedChoiceField
+            options["choices"] = [  # choices for the TypedChoiceField
+                (i, getattr(i, 'label', i.name))
+                for i in self.enum
+            ]
 
         super(EnumFieldMixin, self).__init__(**options)
 
@@ -114,18 +116,15 @@ class EnumFieldMixin(object):
         if not choices_form_class:
             choices_form_class = EnumChoiceField
 
-        if django.VERSION < (1, 6):
-            # Use a better-compatible implementation of `formfield` for old versions of Django.
-            # It's unfortunate that we need to do this, but since the project supports Django 1.5,
-            # we have to do it.
-            from .compat import formfield
-            return formfield(db_field=self, form_class=form_class, choices_form_class=choices_form_class, **kwargs)
-
-        return super(EnumFieldMixin, self).formfield(form_class=form_class, choices_form_class=choices_form_class, **kwargs)
+        return super(EnumFieldMixin, self).formfield(
+            form_class=form_class,
+            choices_form_class=choices_form_class,
+            **kwargs
+        )
 
 
 class EnumField(EnumFieldMixin, models.CharField):
-    def __init__(self, enum, *args, **kwargs):
+    def __init__(self, enum, **kwargs):
         kwargs.setdefault("max_length", 10)
         super(EnumField, self).__init__(enum, **kwargs)
         self.validators = []
@@ -152,38 +151,3 @@ class EnumIntegerField(EnumFieldMixin, models.IntegerField):
             return int(value)
         except ValueError:
             return self.to_python(value).value
-
-
-# South compatibility stuff
-
-def converter_func(enum_class):
-    return "'%s.%s'" % (enum_class.__module__, enum_class.__name__)
-
-
-def enum_value(an_enum):
-    if an_enum is None:
-        return None
-
-    if isinstance(an_enum, Enum):
-        return an_enum.value
-
-    raise ValueError("%s is not a enum" % an_enum)
-
-
-rules = [
-    (
-        [EnumFieldMixin],
-        [],
-        {
-            "enum": ["enum", {'is_django_function': True, "converter": converter_func}],
-            "default": ['default', {'default': NOT_PROVIDED, 'ignore_dynamics': True,
-                                    'converter': enum_value}]},
-    )
-]
-
-try:
-    from south.modelsinspector import add_introspection_rules
-
-    add_introspection_rules(rules, ["^enumfields\.fields"])
-except ImportError:
-    pass
