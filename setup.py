@@ -54,7 +54,7 @@ setup(
     ],
     install_requires=['six'],
     tests_require=[
-        'pytest-django<3.0',
+        'pytest-django',
         'Django',
     ],
     extras_require={
