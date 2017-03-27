@@ -1,7 +1,11 @@
 # -- encoding: UTF-8 --
+from __future__ import absolute_import
+
 from django.forms import TypedChoiceField
 from django.forms.fields import TypedMultipleChoiceField
 from django.utils.encoding import force_text
+
+from .enums import Enum
 
 __all__ = ["EnumChoiceField", "EnumMultipleChoiceField"]
 
@@ -21,6 +25,11 @@ class EnumChoiceFieldMixin(object):
             if super(EnumChoiceFieldMixin, self).valid_value(value.value):
                 return True
         return super(EnumChoiceFieldMixin, self).valid_value(value)
+
+    def to_python(self, value):
+        if isinstance(value, Enum):
+            value = value.value
+        return super(EnumChoiceFieldMixin, self).to_python(value)
 
 
 class EnumChoiceField(EnumChoiceFieldMixin, TypedChoiceField):
