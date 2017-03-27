@@ -9,10 +9,7 @@ except ImportError:  # pragma: no cover
 
 from django.utils.encoding import python_2_unicode_compatible
 
-try:
-    from django.utils.encoding import force_text
-except ImportError:
-    from django.utils.encoding import force_unicode as force_text
+from django.utils.encoding import force_text
 
 
 class EnumMeta(BaseEnumMeta):
