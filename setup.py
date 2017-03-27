@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import os
-from setuptools import setup, find_packages
-from setuptools.command.test import test as TestCommand
 import sys
+
+from setuptools import find_packages, setup
+from setuptools.command.test import test as TestCommand
 
 
 def read(fname):
@@ -25,15 +26,10 @@ class PyTest(TestCommand):
         errno = pytest.main(self.test_args)
         sys.exit(errno)
 
-install_requires = ['six']
-try:
-    import enum
-except ImportError:
-    install_requires.append('enum34')
 
 setup(
     name='django-enumfields',
-    version='0.8.2',
+    version='0.8.3',
     author='HZDG',
     author_email='webmaster@hzdg.com',
     description='Real Python Enums for Django.',
@@ -55,12 +51,16 @@ setup(
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
         'Topic :: Internet :: WWW/HTTP',
     ],
-    install_requires=install_requires,
+    install_requires=['six'],
     tests_require=[
         'pytest-django<3.0',
         'Django',
     ],
+    extras_require={
+        ':python_version<"3.4"': ['enum34'],
+    },
     cmdclass={'test': PyTest},
 )

@@ -1,7 +1,11 @@
 import inspect
-from enum import Enum as BaseEnum
-from enum import EnumMeta as BaseEnumMeta
-from enum import _EnumDict
+
+try:
+    from enum import Enum as BaseEnum
+    from enum import EnumMeta as BaseEnumMeta
+    from enum import _EnumDict
+except ImportError:  # pragma: no cover
+    raise ImportError('Missing the enum module. Please install enum34.')
 
 from django.utils.encoding import python_2_unicode_compatible
 
