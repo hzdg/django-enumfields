@@ -96,3 +96,34 @@ EnumFieldListFilter
 
     class MyModelAdmin(admin.ModelAdmin):
       list_filter = [('color', EnumFieldListFilter)]
+
+DRF integration
+```````````````````
+
+``EnumSupportSerializerMixin`` mixin allows you to use enums in DRF serializers.
+
+
+.. code-block:: python
+
+    # models.py
+    from enumfields import EnumField
+    from enum import Enum
+    
+    class Color(Enum):
+        RED = 'r'
+        GREEN = 'g'
+        BLUE = 'b'
+    
+    class MyModel(models.Model):
+        color = EnumField(Color, max_length=1)
+
+
+    # serializers.py
+    from enumfields.drf.serializers import EnumSupportSerializerMixin
+    from rest_framework import serializers
+    from .models import MyModel
+
+    class MyModelSerializer(EnumSupportSerializerMixin, serializers.ModelSerializer):
+        class Meta:
+            model = MyModel
+            fields = '__all__'
