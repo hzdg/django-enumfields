@@ -26,7 +26,11 @@ class CastOnAssignDescriptor(object):
     def __get__(self, obj, type=None):
         if obj is None:
             return self
-        return obj.__dict__[self.field.name]
+        if self.field.name in obj.__dict__:
+            return obj.__dict__[self.field.name]
+        else:
+            obj.refresh_from_db(fields=[self.field.name])
+            return getattr(obj, self.field.name)
 
     def __set__(self, obj, value):
         obj.__dict__[self.field.name] = self.field.to_python(value)
