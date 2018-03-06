@@ -1,4 +1,5 @@
 # -- encoding: UTF-8 --
+import django
 import pytest
 from django.utils import six
 from django.db.models import BLANK_CHOICE_DASH
@@ -17,13 +18,19 @@ def get_form(**kwargs):
 @pytest.mark.django_db
 def test_unbound_form_with_instance():
     form = get_form()
-    assert 'value="r" selected="selected"' in six.text_type(form["color"])
+    if django.VERSION >= (1, 11):
+        assert 'value="r" selected' in six.text_type(form["color"])
+    else:
+        assert 'value="r" selected="selected"' in six.text_type(form["color"])
 
 
 @pytest.mark.django_db
 def test_bound_form_with_instance():
     form = get_form(data={"color": "g"})
-    assert 'value="g" selected="selected"' in six.text_type(form["color"])
+    if django.VERSION >= (1, 11):
+        assert 'value="g" selected' in six.text_type(form["color"])
+    else:
+        assert 'value="g" selected="selected"' in six.text_type(form["color"])
 
 
 def test_choices():
