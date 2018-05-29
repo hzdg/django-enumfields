@@ -1,3 +1,5 @@
+import django
+
 SECRET_KEY = 'SEKRIT'
 
 INSTALLED_APPS = (
@@ -17,11 +19,18 @@ DATABASES = {
     },
 }
 
-MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-)
+if django.VERSION[0] < 2:
+    MIDDLEWARE_CLASSES = (
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+    )
+else:
+    MIDDLEWARE = (
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+    )
 
 # Speed up tests by using a deliberately weak hasher instead of pbkdf/bcrypt:
 PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
