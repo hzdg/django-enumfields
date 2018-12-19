@@ -7,7 +7,10 @@ from .enums import Color, IntegerEnum, LabeledEnum, Taste, ZeroEnum
 
 class MyModel(models.Model):
     color = EnumField(Color, max_length=1)
+    color_not_editable = EnumField(Color, max_length=1, editable=False, null=True)
+
     taste = EnumField(Taste, default=Taste.SWEET)
+    taste_not_editable = EnumField(Taste, default=Taste.SWEET, editable=False)
     taste_null_default = EnumField(Taste, null=True, blank=True, default=None)
     taste_int = EnumIntegerField(Taste, default=Taste.SWEET)
 
