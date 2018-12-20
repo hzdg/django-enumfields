@@ -49,3 +49,7 @@ class LabeledEnum(Enum):
         BAR = 'Bar'
         # this is intentional. see test_nonunique_label
         FOOBAR = 'Foo'
+
+
+class LongEnum(Enum):
+    A_LOT_OF_SYMBOLS = 'a_lot_of_symbols'

@@ -1,10 +1,10 @@
 from enum import Enum
 
 import django
-from django.utils import six
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
+from django.utils import six
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
 
@@ -128,10 +128,23 @@ class EnumFieldMixin(object):
 
 
 class EnumField(EnumFieldMixin, models.CharField):
-    def __init__(self, enum, **kwargs):
-        kwargs.setdefault("max_length", 10)
+    def __init__(self, enum, auto_length=False, **kwargs):
+        max_item_length = self._get_max_item_length(enum)
+        kwargs.setdefault("max_length", (max_item_length // 10 + 1) * 10 if auto_length else 10)
+
+        assert max_item_length <= kwargs["max_length"], 'The enum have value longer that max_length of the field!'
+
         super(EnumField, self).__init__(enum, **kwargs)
         self.validators = []
+
+    @staticmethod
+    def _get_max_item_length(enum):
+        result = 0
+        for item in enum:
+            if isinstance(item, Enum):
+                result = max(result, len(str(item.value)))
+
+        return result
 
 
 class EnumIntegerField(EnumFieldMixin, models.IntegerField):

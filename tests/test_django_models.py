@@ -1,11 +1,10 @@
 # -- encoding: UTF-8 --
 
-from enum import IntEnum
-
 import pytest
-from django.db import connection
+from django.db import connection, models
 
-from .enums import Color, IntegerEnum, LabeledEnum, Taste, ZeroEnum
+from enumfields import EnumField
+from .enums import Color, IntegerEnum, LabeledEnum, LongEnum, Taste, ZeroEnum
 from .models import MyModel
 
 
@@ -103,3 +102,18 @@ def test_nonunique_label():
 
     obj = MyModel.objects.get(pk=obj.pk)
     assert obj.labeled_enum is LabeledEnum.FOOBAR
+
+
+@pytest.mark.django_db
+def test_too_long_enum():
+    with pytest.raises(AssertionError):
+        class TheModel(models.Model):
+            too_long_enum = EnumField(LongEnum)
+
+
+@pytest.mark.django_db
+def test_auto_length():
+    class TheModel(models.Model):
+        too_long_enum = EnumField(LongEnum, auto_length=True)
+
+    assert TheModel.too_long_enum.field.max_length == 20
