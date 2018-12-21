@@ -11,6 +11,10 @@ from django.utils.module_loading import import_string
 from .forms import EnumChoiceField
 
 
+NOT_AUTO_LENGTH_MAX_LENGTH = 'May not set both `auto_length` and `max_length`'
+ENUM_VALUE_LONGER_THAN_MAX_LENGTH = 'Enum has value(s) longer than the declared max_length ({})'
+
+
 class CastOnAssignDescriptor(object):
     """
     A property descriptor which ensures that `field.to_python()` is called on _every_ assignment to the field.
@@ -129,7 +133,7 @@ class EnumFieldMixin(object):
 
 class EnumField(EnumFieldMixin, models.CharField):
     def __init__(self, enum, auto_length=False, **kwargs):
-        assert not (auto_length and kwargs.get('max_length')), 'May not set both `auto_length` and `max_length`'
+        assert not (auto_length and kwargs.get('max_length')), NOT_AUTO_LENGTH_MAX_LENGTH
 
         kwargs.setdefault("max_length", 10)
         super(EnumField, self).__init__(enum, **kwargs)
@@ -140,8 +144,7 @@ class EnumField(EnumFieldMixin, models.CharField):
         if auto_length:
             self.max_length = (max_enum_value_length // 10 + 1) * 10
 
-        assert max_enum_value_length <= self.max_length, \
-            'Enum has value(s) longer than the declared max_length ({})'.format(kwargs["max_length"])
+        assert max_enum_value_length <= self.max_length, ENUM_VALUE_LONGER_THAN_MAX_LENGTH.format(kwargs["max_length"])
 
 
 class EnumIntegerField(EnumFieldMixin, models.IntegerField):
