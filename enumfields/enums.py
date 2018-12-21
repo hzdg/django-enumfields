@@ -45,6 +45,10 @@ class Enum(EnumMeta('Enum', (BaseEnum,), _EnumDict())):
         """
         return force_text(self.label)
 
+    @classmethod
+    def get_max_value_length(cls):
+        return max(len(str(value)) for value in cls._value2member_map_)
+
 
 @python_2_unicode_compatible
 class IntEnum(int, Enum):

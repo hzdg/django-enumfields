@@ -129,22 +129,19 @@ class EnumFieldMixin(object):
 
 class EnumField(EnumFieldMixin, models.CharField):
     def __init__(self, enum, auto_length=False, **kwargs):
-        max_item_length = self._get_max_item_length(enum)
-        kwargs.setdefault("max_length", (max_item_length // 10 + 1) * 10 if auto_length else 10)
+        assert not (auto_length and kwargs.get('max_length')), 'May not set both `auto_length` and `max_length`'
 
-        assert max_item_length <= kwargs["max_length"], 'The enum have value longer that max_length of the field!'
-
+        kwargs.setdefault("max_length", 10)
         super(EnumField, self).__init__(enum, **kwargs)
         self.validators = []
 
-    @staticmethod
-    def _get_max_item_length(enum):
-        result = 0
-        for item in enum:
-            if isinstance(item, Enum):
-                result = max(result, len(str(item.value)))
+        max_enum_value_length = self.enum.get_max_value_length()
 
-        return result
+        if auto_length:
+            self.max_length = (max_enum_value_length // 10 + 1) * 10
+
+        assert max_enum_value_length <= self.max_length, \
+            'Enum has value(s) longer than the declared max_length ({})'.format(kwargs["max_length"])
 
 
 class EnumIntegerField(EnumFieldMixin, models.IntegerField):
