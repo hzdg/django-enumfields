@@ -61,7 +61,7 @@ Enum
 ````
 
 Normally, you just use normal PEP435_-style enums, however, django-enumfields
-also encludes its own version of Enum with a few extra bells and whistles.
+also includes its own version of Enum with a few extra bells and whistles.
 Namely, the smart definition of labels which are used, for example, in admin
 dropdowns. By default, it will create labels by title-casing your constant
 names. You can provide custom labels with a nested "Labels" class.
