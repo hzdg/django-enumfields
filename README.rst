@@ -95,4 +95,4 @@ EnumFieldListFilter
     from enumfields.admin import EnumFieldListFilter
 
     class MyModelAdmin(admin.ModelAdmin):
-      list_filter = [('color', EnumFieldListFilter)]
+        list_filter = [('color', EnumFieldListFilter)]
