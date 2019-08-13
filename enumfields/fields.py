@@ -129,7 +129,8 @@ class EnumFieldMixin(object):
 
 class EnumField(EnumFieldMixin, models.CharField):
     def __init__(self, enum, **kwargs):
-        kwargs.setdefault("max_length", 10)
+        max_length = max([len(e.value) for e in enum])
+        kwargs.setdefault("max_length", max_length)
         super(EnumField, self).__init__(enum, **kwargs)
         self.validators = []
 
