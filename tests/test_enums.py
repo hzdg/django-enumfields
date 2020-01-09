@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 import pytest
-from django.utils import six
+import six
 from django.core.exceptions import ValidationError
 from django.forms import BaseForm
 

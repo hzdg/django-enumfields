@@ -1,6 +1,7 @@
 import inspect
 
-from django.utils.encoding import force_text, python_2_unicode_compatible
+from django.utils.encoding import force_text
+from six import python_2_unicode_compatible
 
 try:
     from enum import Enum as BaseEnum
