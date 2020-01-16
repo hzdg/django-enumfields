@@ -1,4 +1,3 @@
-from django.utils import six
 from django.utils.encoding import force_text
 from rest_framework.fields import ChoiceField
 
@@ -24,7 +23,7 @@ class EnumField(ChoiceField):
         try:
             if not isinstance(instance, self.enum):
                 instance = self.enum(instance)  # Try to cast it
-            if self.ints_as_names and isinstance(instance.value, six.integer_types):
+            if self.ints_as_names and isinstance(instance.value, int):
                 # If the enum value is an int, assume the name is more representative
                 return instance.name.lower()
             return instance.value
@@ -36,7 +35,7 @@ class EnumField(ChoiceField):
             return data
         try:
             # Convert the value using the same mechanism DRF uses
-            converted_value = self.choice_strings_to_values[six.text_type(data)]
+            converted_value = self.choice_strings_to_values[str(data)]
             return self.enum(converted_value)
         except (ValueError, KeyError):
             pass

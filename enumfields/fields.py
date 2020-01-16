@@ -1,7 +1,6 @@
 from enum import Enum
 
 import django
-from django.utils import six
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
@@ -33,7 +32,7 @@ class CastOnAssignDescriptor(object):
 
 class EnumFieldMixin(object):
     def __init__(self, enum, **options):
-        if isinstance(enum, six.string_types):
+        if isinstance(enum, str):
             self.enum = import_string(enum)
         else:
             self.enum = enum
