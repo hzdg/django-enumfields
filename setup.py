@@ -14,19 +14,6 @@ def read(fname):
 README = read('README.rst')
 
 
-class PyTest(TestCommand):
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = ['tests', '-s']
-        self.test_suite = True
-
-    def run_tests(self):
-        import pytest
-        os.environ['DJANGO_SETTINGS_MODULE'] = 'tests.settings'
-        errno = pytest.main(self.test_args)
-        sys.exit(errno)
-
-
 setup(
     name='django-enumfields',
     version='1.0.0',
@@ -56,13 +43,7 @@ setup(
         'Programming Language :: Python :: 3.6',
         'Topic :: Internet :: WWW/HTTP',
     ],
-    tests_require=[
-        'pytest-django',
-        'Django',
-        'djangorestframework'
-    ],
     extras_require={
         ":python_version<'3.4'": ['enum34'],
     },
-    cmdclass={'test': PyTest},
 )
