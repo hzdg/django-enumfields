@@ -2,15 +2,17 @@ import re
 import uuid
 
 import pytest
+from enumfields import EnumIntegerField
+
+from .enums import Color, IntegerEnum, Taste, ZeroEnum
+from .models import MyModel
+
 try:
     from django.core.urlresolvers import reverse  # Django 1.x
 except ImportError:
     from django.urls import reverse  # Django 2.x
 
-from enumfields import EnumIntegerField
 
-from .enums import Color, IntegerEnum, Taste, ZeroEnum
-from .models import MyModel
 
 
 @pytest.mark.django_db
