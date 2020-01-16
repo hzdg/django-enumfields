@@ -10,7 +10,7 @@ from django.utils.module_loading import import_string
 from .forms import EnumChoiceField
 
 
-class CastOnAssignDescriptor(object):
+class CastOnAssignDescriptor:
     """
     A property descriptor which ensures that `field.to_python()` is called on _every_ assignment to the field.
 
@@ -30,7 +30,7 @@ class CastOnAssignDescriptor(object):
         obj.__dict__[self.field.name] = self.field.to_python(value)
 
 
-class EnumFieldMixin(object):
+class EnumFieldMixin:
     def __init__(self, enum, **options):
         if isinstance(enum, str):
             self.enum = import_string(enum)
@@ -43,10 +43,10 @@ class EnumFieldMixin(object):
                 for i in self.enum
             ]
 
-        super(EnumFieldMixin, self).__init__(**options)
+        super().__init__(**options)
 
     def contribute_to_class(self, cls, name):
-        super(EnumFieldMixin, self).contribute_to_class(cls, name)
+        super().contribute_to_class(cls, name)
         setattr(cls, name, CastOnAssignDescriptor(self))
 
     def to_python(self, value):
@@ -59,7 +59,7 @@ class EnumFieldMixin(object):
                 return m
             if value == m.value or str(value) == str(m.value) or str(value) == str(m):
                 return m
-        raise ValidationError('%s is not a valid value for enum %s' % (value, self.enum), code="invalid_enum_value")
+        raise ValidationError('{} is not a valid value for enum {}'.format(value, self.enum), code="invalid_enum_value")
 
     def get_prep_value(self, value):
         if value is None:
@@ -94,10 +94,10 @@ class EnumFieldMixin(object):
 
             return self.enum(self.default)
 
-        return super(EnumFieldMixin, self).get_default()
+        return super().get_default()
 
     def deconstruct(self):
-        name, path, args, kwargs = super(EnumFieldMixin, self).deconstruct()
+        name, path, args, kwargs = super().deconstruct()
         kwargs['enum'] = self.enum
         kwargs.pop('choices', None)
         if 'default' in kwargs:
@@ -119,7 +119,7 @@ class EnumFieldMixin(object):
         if not choices_form_class:
             choices_form_class = EnumChoiceField
 
-        return super(EnumFieldMixin, self).formfield(
+        return super().formfield(
             form_class=form_class,
             choices_form_class=choices_form_class,
             **kwargs
@@ -129,7 +129,7 @@ class EnumFieldMixin(object):
 class EnumField(EnumFieldMixin, models.CharField):
     def __init__(self, enum, **kwargs):
         kwargs.setdefault("max_length", 10)
-        super(EnumField, self).__init__(enum, **kwargs)
+        super().__init__(enum, **kwargs)
         self.validators = []
 
 

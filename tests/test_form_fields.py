@@ -1,4 +1,3 @@
-# -- encoding: UTF-8 --
 import django
 import pytest
 from django.db.models import BLANK_CHOICE_DASH

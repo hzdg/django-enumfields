@@ -1,5 +1,3 @@
-# -- encoding: UTF-8 --
-
 from enum import IntEnum
 
 import pytest
