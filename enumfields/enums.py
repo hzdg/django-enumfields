@@ -3,7 +3,7 @@ from enum import Enum as BaseEnum
 from enum import EnumMeta as BaseEnumMeta
 from enum import _EnumDict
 
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 
 class EnumMeta(BaseEnumMeta):
@@ -38,9 +38,9 @@ class Enum(EnumMeta('Enum', (BaseEnum,), _EnumDict())):
         """
         Show our label when Django uses the Enum for displaying in a view
         """
-        return force_text(self.label)
+        return force_str(self.label)
 
 
 class IntEnum(int, Enum):
     def __str__(self):  # See Enum.__str__
-        return force_text(self.label)
+        return force_str(self.label)
