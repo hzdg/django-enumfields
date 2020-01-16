@@ -31,6 +31,11 @@ matrix:
     - python: '3.7'
       env: TOXENV=py37-django22
 
+    - python: '3.6'
+      env: TOXENV=py36-django30
+    - python: '3.7'
+      env: TOXENV=py37-django30
+
 install:
   - pip install -U pip wheel setuptools
   - pip install tox
