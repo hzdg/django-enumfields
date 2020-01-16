@@ -1,6 +1,7 @@
 from enum import Enum
 
 import django
+from django.core import checks
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
@@ -131,6 +132,33 @@ class EnumField(EnumFieldMixin, models.CharField):
         kwargs.setdefault("max_length", 10)
         super().__init__(enum, **kwargs)
         self.validators = []
+
+    def check(self, **kwargs):
+        return [
+            *super().check(**kwargs),
+            *self._check_max_length_fit(**kwargs),
+        ]
+
+    def _check_max_length_fit(self, **kwargs):
+        if isinstance(self.max_length, int):
+            unfit_values = [e for e in self.enum if len(str(e.value)) > self.max_length]
+            if unfit_values:
+                fit_max_length = max([len(str(e.value)) for e in self.enum])
+                message = (
+                    "Values {unfit_values} of {enum} won't fit in "
+                    "the backing CharField (max_length={max_length})."
+                ).format(
+                    unfit_values=unfit_values,
+                    enum=self.enum,
+                    max_length=self.max_length,
+                )
+                hint = "Setting max_length={fit_max_length} will resolve this.".format(
+                    fit_max_length=fit_max_length,
+                )
+                return [
+                    checks.Warning(message, hint=hint, obj=self, id="enumfields.max_length_fit"),
+                ]
+        return []
 
 
 class EnumIntegerField(EnumFieldMixin, models.IntegerField):
