@@ -25,7 +25,7 @@ EnumField, EnumIntegerField
 .. code-block:: python
 
     from enumfields import EnumField
-    from enumfields import Enum  # Uses Ethan Furman's "enum34" backport
+    from enum import Enum
 
     class Color(Enum):
         RED = 'r'

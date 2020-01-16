@@ -1,13 +1,9 @@
 import inspect
+from enum import Enum as BaseEnum
+from enum import EnumMeta as BaseEnumMeta
+from enum import _EnumDict
 
-from django.utils.encoding import force_text, python_2_unicode_compatible
-
-try:
-    from enum import Enum as BaseEnum
-    from enum import EnumMeta as BaseEnumMeta
-    from enum import _EnumDict
-except ImportError:  # pragma: no cover
-    raise ImportError('Missing the enum module. Please install enum34.')
+from django.utils.encoding import force_text
 
 
 class EnumMeta(BaseEnumMeta):
@@ -29,7 +25,6 @@ class EnumMeta(BaseEnumMeta):
         return obj
 
 
-@python_2_unicode_compatible
 class Enum(EnumMeta('Enum', (BaseEnum,), _EnumDict())):
     @classmethod
     def choices(cls):
@@ -46,7 +41,6 @@ class Enum(EnumMeta('Enum', (BaseEnum,), _EnumDict())):
         return force_text(self.label)
 
 
-@python_2_unicode_compatible
 class IntEnum(int, Enum):
     def __str__(self):  # See Enum.__str__
         return force_text(self.label)
