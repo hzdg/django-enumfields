@@ -1,7 +1,7 @@
-import pytest
 from django.core.exceptions import ValidationError
 from django.forms import BaseForm
 
+import pytest
 from enumfields import EnumField
 
 from .enums import Color, IntegerEnum
