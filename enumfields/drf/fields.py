@@ -1,4 +1,4 @@
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from rest_framework.fields import ChoiceField
 
 
@@ -47,9 +47,9 @@ class EnumField(ChoiceField):
                     return choice
 
             # Case-insensitive logic:
-            l_data = force_text(data).lower()
+            l_data = force_str(data).lower()
             for choice in self.enum:
-                if choice.name.lower() == l_data or force_text(choice.value).lower() == l_data:
+                if choice.name.lower() == l_data or force_str(choice.value).lower() == l_data:
                     return choice
 
         # Fallback (will likely just raise):
