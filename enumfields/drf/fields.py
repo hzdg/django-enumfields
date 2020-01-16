@@ -15,10 +15,10 @@ class EnumField(ChoiceField):
         self.lenient = lenient
         self.ints_as_names = ints_as_names
         kwargs['choices'] = tuple((e.value, getattr(e, 'label', e.name)) for e in self.enum)
-        super(EnumField, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def to_representation(self, instance):
-        if instance in ('', u'', None):
+        if instance in ('', None):
             return instance
         try:
             if not isinstance(instance, self.enum):
@@ -28,7 +28,7 @@ class EnumField(ChoiceField):
                 return instance.name.lower()
             return instance.value
         except ValueError:
-            raise ValueError('Invalid value [%r] of enum %s' % (instance, self.enum.__name__))
+            raise ValueError('Invalid value [{!r}] of enum {}'.format(instance, self.enum.__name__))
 
     def to_internal_value(self, data):
         if isinstance(data, self.enum):
@@ -53,4 +53,4 @@ class EnumField(ChoiceField):
                     return choice
 
         # Fallback (will likely just raise):
-        return super(EnumField, self).to_internal_value(data)
+        return super().to_internal_value(data)

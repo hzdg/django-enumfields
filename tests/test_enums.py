@@ -1,6 +1,3 @@
-# -- encoding: UTF-8 --
-from __future__ import unicode_literals
-
 import pytest
 from django.core.exceptions import ValidationError
 from django.forms import BaseForm
@@ -44,14 +41,14 @@ def test_lazy_labels():
 def test_formfield_labels():
     # Formfield choice label
     form_field = EnumField(Color).formfield()
-    expectations = dict((val.value, str(val)) for val in Color)
+    expectations = {val.value: str(val) for val in Color}
     for value, text in form_field.choices:
         if value:
             assert text == expectations[value]
 
 
 def test_formfield_functionality():
-    form_cls = type(str("FauxForm"), (BaseForm,), {
+    form_cls = type("FauxForm", (BaseForm,), {
         "base_fields": {"color": EnumField(Color).formfield()}
     })
     form = form_cls(data={"color": "r"})

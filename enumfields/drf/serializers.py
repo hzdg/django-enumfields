@@ -4,12 +4,12 @@ from enumfields.drf.fields import EnumField as EnumSerializerField
 from enumfields.fields import EnumFieldMixin
 
 
-class EnumSupportSerializerMixin(object):
+class EnumSupportSerializerMixin:
     enumfield_options = {}
 
     def build_standard_field(self, field_name, model_field):
         field_class, field_kwargs = (
-            super(EnumSupportSerializerMixin, self).build_standard_field(field_name, model_field)
+            super().build_standard_field(field_name, model_field)
         )
         if field_class == ChoiceField and isinstance(model_field, EnumFieldMixin):
             field_class = EnumSerializerField

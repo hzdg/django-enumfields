@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from django.contrib.admin.filters import ChoicesFieldListFilter
 from django.utils.encoding import force_str
 from django.utils.translation import gettext_lazy as _
@@ -31,4 +29,4 @@ class EnumFieldListFilter(ChoicesFieldListFilter):
                 if force_str(enum_value.value) == self.lookup_val:
                     self.used_parameters[self.lookup_kwarg] = enum_value
                     break
-        return super(EnumFieldListFilter, self).queryset(request, queryset)
+        return super().queryset(request, queryset)
