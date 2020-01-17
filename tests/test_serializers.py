@@ -23,15 +23,23 @@ class LenientIntNameSerializer(MySerializer):
 
 @pytest.mark.parametrize('int_names', (False, True))
 def test_serialize(int_names):
-    inst = MyModel(color=Color.BLUE, taste=Taste.UMAMI, int_enum=IntegerEnum.B)
+    inst = MyModel(
+        color=Color.BLUE,
+        color_not_editable=Color.BLUE,
+        taste=Taste.UMAMI,
+        taste_not_editable=Taste.UMAMI,
+        int_enum=IntegerEnum.B,
+        int_enum_not_editable=IntegerEnum.B
+    )
     data = (LenientIntNameSerializer if int_names else MySerializer)(inst).data
-    assert data['color'] == Color.BLUE.value
+    assert data['color'] == data['color_not_editable'] == Color.BLUE.value
+    assert Color.BLUE.value
     if int_names:
-        assert data['taste'] == 'umami'
-        assert data['int_enum'] == 'b'
+        assert data['taste'] == data['taste_not_editable'] == 'umami'
+        assert data['int_enum'] == data['int_enum_not_editable'] == 'b'
     else:
-        assert data['taste'] == Taste.UMAMI.value
-        assert data['int_enum'] == IntegerEnum.B.value
+        assert data['taste'] == data['taste_not_editable'] == Taste.UMAMI.value
+        assert data['int_enum'] == data['int_enum_not_editable'] == IntegerEnum.B.value
 
 
 @pytest.mark.django_db
