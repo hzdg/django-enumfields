@@ -26,6 +26,7 @@ setup(
     packages=find_packages(exclude=['tests*']),
     zip_safe=False,
     classifiers=[
+        'License :: OSI Approved :: MIT License',
         'Environment :: Web Environment',
         'Framework :: Django',
         'Framework :: Django :: 1.11',
