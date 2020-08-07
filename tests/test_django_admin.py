@@ -2,17 +2,11 @@ import re
 import uuid
 
 import pytest
+from django.urls import reverse
 from enumfields import EnumIntegerField
 
 from .enums import Color, IntegerEnum, Taste, ZeroEnum
 from .models import MyModel
-
-try:
-    from django.core.urlresolvers import reverse  # Django 1.x
-except ImportError:
-    from django.urls import reverse  # Django 2.x
-
-
 
 
 @pytest.mark.django_db
@@ -33,10 +27,7 @@ def test_model_admin_post(admin_client):
 
     assert b"This field is required" not in text
     assert b"Select a valid choice" not in text
-    try:
-        inst = MyModel.objects.get(random_code=secret_uuid)
-    except DoesNotExist:
-        assert False, "Object wasn't created in the database"
+    inst = MyModel.objects.get(random_code=secret_uuid)
     assert inst.color == Color.RED, "Redness not assured"
     assert inst.taste == Taste.UMAMI, "Umami not there"
     assert inst.taste_int == Taste.SWEET, "Not sweet enough"

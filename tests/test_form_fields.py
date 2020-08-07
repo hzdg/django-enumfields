@@ -1,4 +1,3 @@
-import django
 from django.db.models import BLANK_CHOICE_DASH
 from django.forms.models import model_to_dict, modelform_factory
 
@@ -17,19 +16,13 @@ def get_form(**kwargs):
 @pytest.mark.django_db
 def test_unbound_form_with_instance():
     form = get_form()
-    if django.VERSION >= (1, 11):
-        assert 'value="r" selected' in str(form["color"])
-    else:
-        assert 'value="r" selected="selected"' in str(form["color"])
+    assert 'value="r" selected' in str(form["color"])
 
 
 @pytest.mark.django_db
 def test_bound_form_with_instance():
     form = get_form(data={"color": "g"})
-    if django.VERSION >= (1, 11):
-        assert 'value="g" selected' in str(form["color"])
-    else:
-        assert 'value="g" selected="selected"' in str(form["color"])
+    assert 'value="g" selected' in str(form["color"])
 
 
 def test_choices():

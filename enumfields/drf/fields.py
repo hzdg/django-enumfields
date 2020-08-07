@@ -6,7 +6,7 @@ from rest_framework.fields import ChoiceField
 class EnumField(ChoiceField):
     def __init__(self, enum, lenient=False, ints_as_names=False, **kwargs):
         """
-        :param enum: The enumeration class. 
+        :param enum: The enumeration class.
         :param lenient: Whether to allow lenient parsing (case-insensitive, by value or name)
         :type lenient: bool
         :param ints_as_names: Whether to serialize integer-valued enums by their name, not the integer value
