@@ -86,16 +86,10 @@ class EnumFieldMixin:
         return value.value if value else None
 
     def get_default(self):
-        if self.has_default():
-            if self.default is None:
-                return None
-
-            if isinstance(self.default, Enum):
-                return self.default
-
-            return self.enum(self.default)
-
-        return super().get_default()
+        default = super().get_default()
+        if self.has_default() and default is not None:
+            default = self.enum(default)
+        return default
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
