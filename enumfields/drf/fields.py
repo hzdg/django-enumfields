@@ -19,17 +19,11 @@ class EnumField(ChoiceField):
         super().__init__(**kwargs)
 
     def to_representation(self, instance):
-        if instance in ('', None):
-            return instance
-        try:
-            if not isinstance(instance, self.enum):
-                instance = self.enum(instance)  # Try to cast it
-            if self.ints_as_names and isinstance(instance.value, int):
-                # If the enum value is an int, assume the name is more representative
-                return instance.name.lower()
-            return instance.value
-        except ValueError:
-            raise ValueError('Invalid value [{!r}] of enum {}'.format(instance, self.enum.__name__))
+        assert isinstance(instance, self.enum), instance
+        if self.ints_as_names and isinstance(instance.value, int):
+            # If the enum value is an int, assume the name is more representative
+            return instance.name.lower()
+        return instance.value
 
     def to_internal_value(self, data):
         if isinstance(data, self.enum):
