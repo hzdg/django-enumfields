@@ -72,14 +72,8 @@ class EnumFieldMixin:
         return self.to_python(value)
 
     def value_to_string(self, obj):
-        """
-        This method is needed to support proper serialization. While its name is value_to_string()
-        the real meaning of the method is to convert the value to some serializable format.
-        Since most of the enum values are strings or integers we WILL NOT convert it to string
-        to enable integers to be serialized natively.
-        """
         value = self.value_from_object(obj)
-        return value.value if value else None
+        return str(value.value) if value is not None else ''
 
     def get_default(self):
         if self.has_default():

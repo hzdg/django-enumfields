@@ -91,8 +91,8 @@ def test_serialization():
     ser = PythonSerializer()
     ser.serialize([m])
     fields = ser.getvalue()[0]["fields"]
-    assert fields["color"] == m.color.value
-    assert fields["taste"] == m.taste.value
+    assert fields["color"] == "r"
+    assert fields["taste"] == "4"
 
 
 @pytest.mark.django_db
