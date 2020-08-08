@@ -25,3 +25,5 @@ class MyModel(models.Model):
 
     zero2 = EnumIntegerField(ZeroEnum, default=ZeroEnum.ZERO)
     labeled_enum = EnumField(LabeledEnum, blank=True, null=True)
+
+    zero3 = EnumIntegerField(ZeroEnum, default=0, blank=True)

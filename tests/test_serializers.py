@@ -48,7 +48,7 @@ def test_serialize(int_names):
 def test_deserialize(lenient_data, lenient_serializer):
     secret_uuid = str(uuid.uuid4())
     data = {
-        'color': Color.BLUE.value,
+        'color': Color.BLUE,
         'taste': Taste.UMAMI.value,
         'int_enum': IntegerEnum.B.value,
         'random_code': secret_uuid,

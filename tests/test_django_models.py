@@ -24,6 +24,10 @@ def test_field_value():
         MyModel.objects.filter(color='xx')[0]
 
 
+def test_descriptor():
+    assert MyModel.color.field.enum is Color
+
+
 @pytest.mark.django_db
 def test_db_value():
     m = MyModel(color=Color.RED)

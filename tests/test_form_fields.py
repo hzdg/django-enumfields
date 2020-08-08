@@ -25,6 +25,12 @@ def test_bound_form_with_instance():
     assert 'value="g" selected' in str(form["color"])
 
 
+@pytest.mark.django_db
+def test_bound_form_with_instance_empty():
+    form = get_form(data={"color": None})
+    assert 'value="" selected' in str(form["color"])
+
+
 def test_choices():
     form = get_form()
     assert form.base_fields["zero2"].choices == [(0, 'Zero'), (1, 'One')]
