@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import connection
 
 import pytest
@@ -20,7 +21,7 @@ def test_field_value():
     m = MyModel.objects.filter(color='r')[0]
     assert m.color == Color.RED
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         MyModel.objects.filter(color='xx')[0]
 
 

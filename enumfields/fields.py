@@ -66,7 +66,7 @@ class EnumFieldMixin:
             return None
         if isinstance(value, self.enum):  # Already the correct type -- fast path
             return value.value
-        return self.enum(value).value
+        return self.to_python(value).value
 
     def from_db_value(self, value, expression, connection, *args):
         return self.to_python(value)
@@ -154,15 +154,3 @@ class EnumIntegerField(EnumFieldMixin, models.IntegerField):
         # connection.ops.integer_field_range method.
         next = super(models.IntegerField, self)
         return next.validators
-
-    def get_prep_value(self, value):
-        if value is None:
-            return None
-
-        if isinstance(value, Enum):
-            return value.value
-
-        try:
-            return int(value)
-        except ValueError:
-            return self.to_python(value).value
