@@ -19,7 +19,7 @@ def test_model_admin_post(admin_client):
         'taste': Taste.UMAMI.value,
         'taste_int': Taste.SWEET.value,
         'random_code': secret_uuid,
-        'zero2': ZeroEnum.ZERO.value,
+        'zero': ZeroEnum.ZERO.value,
     }
     response = admin_client.post(url, follow=True, data=post_data)
     response.render()

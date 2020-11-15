@@ -19,11 +19,10 @@ class MyModel(models.Model):
 
     random_code = models.TextField(null=True, blank=True)
 
-    zero_field = EnumIntegerField(ZeroEnum, null=True, default=None, blank=True)
+    zero = EnumIntegerField(ZeroEnum, default=ZeroEnum.ZERO)
+    zero2 = EnumIntegerField(ZeroEnum, default=0, blank=True)
+
     int_enum = EnumIntegerField(IntegerEnum, null=True, default=None, blank=True)
     int_enum_not_editable = EnumIntegerField(IntegerEnum, default=IntegerEnum.A, editable=False)
 
-    zero2 = EnumIntegerField(ZeroEnum, default=ZeroEnum.ZERO)
     labeled_enum = EnumField(LabeledEnum, blank=True, null=True)
-
-    zero3 = EnumIntegerField(ZeroEnum, default=0, blank=True)

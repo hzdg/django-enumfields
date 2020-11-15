@@ -65,13 +65,14 @@ def test_enum_int_field_validators():
 @pytest.mark.django_db
 def test_zero_enum_loads():
     # Verifies that we can save and load enums with the value of 0 (zero).
-    m = MyModel(zero_field=ZeroEnum.ZERO,
-                color=Color.GREEN)
+    m = MyModel(zero=ZeroEnum.ZERO, color=Color.GREEN)
     m.save()
-    assert m.zero_field == ZeroEnum.ZERO
+    assert m.zero == ZeroEnum.ZERO
+    assert m.zero2 == ZeroEnum.ZERO
 
     m = MyModel.objects.get(id=m.id)
-    assert m.zero_field == ZeroEnum.ZERO
+    assert m.zero == ZeroEnum.ZERO
+    assert m.zero2 == ZeroEnum.ZERO
 
 
 @pytest.mark.django_db
