@@ -1,6 +1,5 @@
 from enum import Enum
 
-import django
 from django.core import checks
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -79,10 +78,7 @@ class EnumFieldMixin:
         Since most of the enum values are strings or integers we WILL NOT convert it to string
         to enable integers to be serialized natively.
         """
-        if django.VERSION >= (2, 0):
-            value = self.value_from_object(obj)
-        else:
-            value = self._get_val_from_obj(obj)
+        value = self.value_from_object(obj)
         return value.value if value else None
 
     def get_default(self):
