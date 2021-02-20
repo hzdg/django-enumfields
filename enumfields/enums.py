@@ -1,3 +1,4 @@
+import sys
 import inspect
 from enum import _EnumDict
 from enum import Enum as BaseEnum
@@ -14,6 +15,9 @@ class EnumMeta(BaseEnumMeta):
             del attrs['Labels']
             if hasattr(attrs, '_member_names'):
                 attrs._member_names.remove('Labels')
+
+        if sys.version_info > (3, 9, 2):
+            attrs._cls_name = name
 
         obj = BaseEnumMeta.__new__(mcs, name, bases, attrs)
         for m in obj:
