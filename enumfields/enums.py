@@ -16,7 +16,7 @@ class EnumMeta(BaseEnumMeta):
             if hasattr(attrs, '_member_names'):
                 attrs._member_names.remove('Labels')
 
-        if sys.version_info > (3, 9, 2):
+        if sys.version_info >= (3, 9, 2):
             attrs._cls_name = name
 
         obj = BaseEnumMeta.__new__(mcs, name, bases, attrs)
