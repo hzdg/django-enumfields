@@ -1,6 +1,7 @@
 import uuid
 
 import pytest
+from enumfields.drf import EnumField
 from enumfields.drf.serializers import EnumSupportSerializerMixin
 from rest_framework import serializers
 
@@ -40,6 +41,22 @@ def test_serialize(int_names):
     else:
         assert data['taste'] == data['taste_not_editable'] == Taste.UMAMI.value
         assert data['int_enum'] == data['int_enum_not_editable'] == IntegerEnum.B.value
+
+
+@pytest.mark.parametrize('instance, representation', [
+    ('', ''),
+    (None, None),
+    ('r', 'r'),
+    ('g', 'g'),
+    ('b', 'b'),
+])
+def test_enumfield_to_representation(instance, representation):
+    assert EnumField(Color).to_representation(instance) == representation
+
+
+def test_invalid_enumfield_to_representation():
+    with pytest.raises(ValueError, match=r"Invalid value.*"):
+        assert EnumField(Color).to_representation('INVALID_ENUM_STRING')
 
 
 @pytest.mark.django_db
