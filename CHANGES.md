@@ -1,3 +1,10 @@
+# 2.1.0 (released 2021-02-22)
+
+* Drop support for Django 2.0
+* Drop support for Django 2.1
+* Add support for Django 3.1
+* Add support for Python 3.9.2+
+
 # 2.0.0 (released 2020-01-18)
 
 ## Version support changes (possibly breaking)
