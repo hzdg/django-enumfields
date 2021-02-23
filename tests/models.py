@@ -12,6 +12,8 @@ class MyModel(models.Model):
     taste = EnumField(Taste, default=Taste.SWEET)
     taste_not_editable = EnumField(Taste, default=Taste.SWEET, editable=False)
     taste_null_default = EnumField(Taste, null=True, blank=True, default=None)
+    taste_callable_enum_default = EnumField(Taste, default=lambda: Taste.SWEET, editable=False)
+    taste_callable_value_default = EnumField(Taste, default=lambda: Taste.SWEET.value, editable=False)
     taste_int = EnumIntegerField(Taste, default=Taste.SWEET)
 
     default_none = EnumIntegerField(Taste, default=None, null=True, blank=True)

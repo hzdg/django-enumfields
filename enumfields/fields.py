@@ -66,32 +66,20 @@ class EnumFieldMixin:
             return None
         if isinstance(value, self.enum):  # Already the correct type -- fast path
             return value.value
-        return self.enum(value).value
+        return self.to_python(value).value
 
     def from_db_value(self, value, expression, connection, *args):
         return self.to_python(value)
 
     def value_to_string(self, obj):
-        """
-        This method is needed to support proper serialization. While its name is value_to_string()
-        the real meaning of the method is to convert the value to some serializable format.
-        Since most of the enum values are strings or integers we WILL NOT convert it to string
-        to enable integers to be serialized natively.
-        """
         value = self.value_from_object(obj)
-        return value.value if value else None
+        return str(value.value) if value is not None else ''
 
     def get_default(self):
-        if self.has_default():
-            if self.default is None:
-                return None
-
-            if isinstance(self.default, Enum):
-                return self.default
-
-            return self.enum(self.default)
-
-        return super().get_default()
+        default = super().get_default()
+        if default is not None and self.has_default():
+            default = self.enum(default)
+        return default
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
@@ -166,15 +154,3 @@ class EnumIntegerField(EnumFieldMixin, models.IntegerField):
         # connection.ops.integer_field_range method.
         next = super(models.IntegerField, self)
         return next.validators
-
-    def get_prep_value(self, value):
-        if value is None:
-            return None
-
-        if isinstance(value, Enum):
-            return value.value
-
-        try:
-            return int(value)
-        except ValueError:
-            return self.to_python(value).value

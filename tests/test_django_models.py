@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import connection
 
 import pytest
@@ -20,7 +21,7 @@ def test_field_value():
     m = MyModel.objects.filter(color='r')[0]
     assert m.color == Color.RED
 
-    with pytest.raises(ValueError):
+    with pytest.raises(ValidationError):
         MyModel.objects.filter(color='xx')[0]
 
 
@@ -91,8 +92,8 @@ def test_serialization():
     ser = PythonSerializer()
     ser.serialize([m])
     fields = ser.getvalue()[0]["fields"]
-    assert fields["color"] == m.color.value
-    assert fields["taste"] == m.taste.value
+    assert fields["color"] == "r"
+    assert fields["taste"] == "4"
 
 
 @pytest.mark.django_db
