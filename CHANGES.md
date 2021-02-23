@@ -1,3 +1,8 @@
+# 2.1.1 (released 2021-02-23)
+
+* Fix string-to-enum conversion regression mistakenly
+  introduced in 2.1.0
+
 # 2.1.0 (released 2021-02-22)
 
 * Drop support for Django 2.0
