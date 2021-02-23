@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import gettext_lazy
 
 from enumfields import Enum, IntEnum
 
@@ -12,7 +12,7 @@ class Color(Enum):
 
     class Labels:
         RED = 'Reddish'
-        BLUE = ugettext_lazy('bluë')
+        BLUE = gettext_lazy('bluë')
 
 
 class Taste(Enum):
