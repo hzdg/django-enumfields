@@ -39,7 +39,7 @@ class EnumFieldMixin:
 
         if "choices" not in options:
             options["choices"] = [  # choices for the TypedChoiceField
-                (i, getattr(i, 'label', i.name))
+                (i.value, getattr(i, 'label', i.name))
                 for i in self.enum
             ]
 
