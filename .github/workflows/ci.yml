@@ -1,0 +1,24 @@
+name: CI
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  Build:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        include:
+          - python-version: '3.6'
+          - python-version: '3.10'
+    steps:
+      - name: 'Set up Python ${{ matrix.python-version }}'
+        uses: actions/setup-python@v2
+        with:
+          python-version: '${{ matrix.python-version }}'
+      - uses: actions/checkout@v2
+      - run: pip install -U pip wheel setuptools tox tox-gh-actions
+      - run: tox
