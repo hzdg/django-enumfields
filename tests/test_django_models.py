@@ -38,6 +38,13 @@ def test_db_value():
 
 
 @pytest.mark.django_db
+def test_deferred():
+    m = MyModel.objects.create(color=Color.RED)
+    m2 = MyModel.objects.defer('color').get(id=m.id)
+    assert m2.color == Color.RED
+
+
+@pytest.mark.django_db
 def test_enum_int_field_validators():
     if not hasattr(connection.ops, 'integer_field_range'):
         return pytest.skip('Needs connection.ops.integer_field_range')

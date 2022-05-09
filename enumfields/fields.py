@@ -4,33 +4,21 @@ from django.core import checks
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.fields import BLANK_CHOICE_DASH
+from django.db.models.query_utils import DeferredAttribute
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
 
 from .forms import EnumChoiceField
 
 
-class CastOnAssignDescriptor:
-    """
-    A property descriptor which ensures that `field.to_python()` is called on _every_ assignment to the field.
-
-    This used to be provided by the `django.db.models.subclassing.Creator` class, which in turn
-    was used by the deprecated-in-Django-1.10 `SubfieldBase` class, hence the reimplementation here.
-    """
-
-    def __init__(self, field):
-        self.field = field
-
-    def __get__(self, obj, type=None):
-        if obj is None:
-            return self
-        return obj.__dict__[self.field.name]
-
+class CastOnAssignDescriptor(DeferredAttribute):
     def __set__(self, obj, value):
         obj.__dict__[self.field.name] = self.field.to_python(value)
 
 
 class EnumFieldMixin:
+    descriptor_class = CastOnAssignDescriptor
+
     def __init__(self, enum, **options):
         if isinstance(enum, str):
             self.enum = import_string(enum)
