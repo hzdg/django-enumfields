@@ -14,7 +14,7 @@ class EnumMeta(BaseEnumMeta):
         if Labels is not None and inspect.isclass(Labels):
             del attrs['Labels']
             if hasattr(attrs, '_member_names'):
-                attrs._member_names.remove('Labels')
+                del attrs._member_names['Labels']
 
         if sys.version_info >= (3, 9, 2):
             attrs._cls_name = name
